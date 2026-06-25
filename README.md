@@ -1,44 +1,65 @@
-# 🍃 إطمأن | Etmaan - Mental Health Consultation Platform
+# Eitman - Mental Health Consultation Platform 🧠💙
 
-**Etmaan (إطمأن)** هو منصة استشارات نفسية متكاملة مبنية باستخدام إطار العمل **Laravel**. تهدف المنصة إلى ربط المرضى بالأطباء والأخصائيين النفسيين في بيئة آمنة، مشفرة، وتضمن الخصوصية الكاملة لإجراء الجلسات الاستشارية (نصية/فيديو).
+## 📌 Overview
 
----
-
-## 🚀 المميزات الرئيسية | Main Features
-
-### 👤 بوابة المريض (Patient Portal)
-- **البحث المتقدم:** تصفح الأطباء وتصفيتهم حسب التخصص، السعر، والتقييم.
-- **نظام الحجز الذكي:** حجز المواعيد المتاحة فورياً والدفع الإلكتروني.
-- **العيادة الافتراضية:** إجراء الجلسات عبر غرف فيديو وصوت آمنة ومحادثات نصية فورية.
-- **أدوات الدعم:** مقياس الحالة المزاجية اليومي واختبارات تقييم ذاتي.
-
-### 🩺 بوابة الطبيب (Therapist Portal)
-- **إدارة المواعيد:** جدول مرن لتحديد ساعات وأيام العمل المتاحة.
-- **السجل الطبي المشفر:** مساحة خاصة لكتابة وحفظ الملاحظات الطبية لكل مريض بشكل مشفر تماماً.
-- **المحفظة المالية:** تتبع الأرباح المستحقة من الجلسات المكتملة.
-
-### 🛡️ لوحة تحكم الإدارة (Admin Dashboard)
-- **التحقق من الأطباء:** مراجعة الشهادات وتراخيص مزاولة المهنة قبل تفعيل الحسابات.
-- **الرقابة والتقارير:** إحصائيات شاملة عن الحجوزات، الدخل، ونشاط المنصة.
+Eitman is a secure and confidential online platform for mental health consultations, connecting patients with licensed psychologists through remote sessions. The platform enables users to find the right specialist, book appointments, and receive psychological support without the fear of social stigma. Eitman also features an AI-powered initial psychological assessment that helps users identify their mental health status and recommends the most suitable specialty before booking a session.
 
 ---
 
-## 🛠️ التقنيات المستخدمة | Tech Stack
+## 🚀 Key Features
 
-- **Backend Framework:** Laravel (PHP)
-- **Database:** MySQL
-- **Real-time Chat:** Laravel Reverb / Pusher
-- **Video/Audio Streaming:** Twilio Video API / Agora SDK
-- **Authentication & Roles:** Spatie Laravel-Permission & Laravel Breeze
-- **Security:** AES-256 Database Encryption (For medical notes)
+### 👤 Patient Portal
+- Secure Registration & Login with email verification
+- Search psychologists by specialty, rating, experience, and availability
+- Book, reschedule, or cancel appointments
+- Online sessions (text, audio, and video)
+- View session history, treatment plans, and progress notes
+- Rate psychologists after each session
+- AI-powered initial psychological evaluation
+
+### 👨‍⚕️ Psychologist Dashboard
+- Create and manage professional profile with credentials
+- Set working hours and availability slots
+- Accept, reschedule, or decline patient requests
+- Write and manage treatment notes and plans
+- Access complete patient session records
+- Secure chat with patients during treatment
+
+### 🔐 Admin Panel
+- Manage all users (patients, psychologists, admins)
+- Create and manage psychological specialties
+- Approve or reject psychologist registration requests
+- Monitor and resolve user complaints
+- Ensure quality of service and platform safety
+
+### 🤖 Smart Assessment
+Before booking a session, patients complete a psychological questionnaire. The system analyzes responses and provides:
+- Anxiety level assessment
+- Stress level indicators
+- Depression screening
+- Recommended specialty matching
 
 ---
 
-## 💻 طريقة التشغيل والتركيب | Installation Guide
+## 🛠️ Tech Stack
 
-اتبع الخطوات التالية لتشغيل المشروع محلياً على جهازك:
+### Front-End
+- HTML5, CSS3, JavaScript
+- React.js / Bootstrap
 
-1. **استنساخ المستودع (Clone the repository):**
-```bash
-   git clone [https://github.com/your-username/Etmaan-Mental-Health-Platform.git](https://github.com/your-username/Etmaan-Mental-Health-Platform.git)
-   cd Etmaan-Mental-Health-Platform
+### Back-End
+- Laravel (PHP Framework)
+
+### Database
+- MySQL
+
+---
+
+## 👥 Contributors
+
+- **Hamde Mush** - Backend Developer
+- **Waseem El-Essi** - Frontend Developer
+
+---
+
+**Made with ❤️ for better mental health in Gaza and beyond**
