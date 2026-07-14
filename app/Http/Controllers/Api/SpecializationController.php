@@ -45,7 +45,7 @@ class SpecializationController extends Controller
             'status' => 'success',
             'message' => 'Specialization created successfully.',
             'data' => $specialization
-        ], 21);
+        ], 201);
     }
 
     /**

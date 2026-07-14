@@ -1,2 +1,11 @@
 User-agent: *
-Disallow:
+
+Disallow: /pages/admin/
+Disallow: /pages/doctor/
+Disallow: /pages/patient/
+Disallow: /api/
+
+Allow: /index.html
+Allow: /pages/about.html
+Allow: /pages/articles.html
+Allow: /pages/specialists.html

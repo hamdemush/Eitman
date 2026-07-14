@@ -1,0 +1,86 @@
+/* ==========================================================================
+   FILE:        base.css
+   PROJECT:     Etma'en (إطمئن)
+   PURPOSE:     CSS reset + base HTML element styling (typography, links,
+                images, generic utility classes). Loaded after variables.css.
+   ========================================================================== */
+
+/* ---- Reset ---- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: 'Almarai', sans-serif;
+  background: var(--bg-page);
+  color: var(--ink-900);
+  /* NOTE: no hardcoded direction/text-align here on purpose.
+     Direction comes from the dir="rtl|ltr" attribute set on <html> by
+     i18n.js, and "start" is a logical value that automatically means
+     "right" in RTL and "left" in LTR - so the same rule works for both
+     languages without writing separate overrides. */
+  text-align: start;
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---- Typography ---- */
+h1, h2, h3, h4,
+.font-display {
+  font-family: 'Cairo', sans-serif;
+  margin: 0;
+  line-height: 1.3;
+  /* ink-900 (not a fixed brand hue) so headings stay readable in dark mode */
+  color: var(--ink-900);
+}
+
+p {
+  margin: 0;
+  color: var(--ink-500);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+  
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* ---- Accessibility: visible keyboard focus ring ---- */
+:focus-visible {
+  outline: 3px solid var(--teal-400);
+  outline-offset: 2px;
+}
+
+/* ---- Generic layout helper ---- */
+.container {
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+/* ---- Small utility classes ---- */
+.mt-0 { margin-top: 0; }
+.center { text-align: center; }
