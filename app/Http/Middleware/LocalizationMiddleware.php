@@ -12,12 +12,13 @@ class LocalizationMiddleware
      * Handle an incoming request.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
-     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
+     * @param  \Closure  $next
+     * @return mixed
      */
     public function handle(Request $request, Closure $next)
     {
-        $locale = $request->header('Accept-Language', 'en');
+        $rawLocale = $request->header('Accept-Language', 'en');
+        $locale = strtolower(substr($rawLocale, 0, 2));
 
         if (in_array($locale, ['ar', 'en'])) {
             App::setLocale($locale);

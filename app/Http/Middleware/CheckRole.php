@@ -13,7 +13,7 @@ class CheckRole
         if (!$request->user()) {
             return response()->json([
                 'success' => false,
-                'message' => 'غير مصرح بالدخول، يرجى تسجيل الدخول أولاً.'
+                'message' => __('messages.unauthenticated')
             ], 401);
         }
 
@@ -27,7 +27,7 @@ class CheckRole
         if ($userRole !== $role) {
             return response()->json([
                 'success' => false,
-                'message' => 'عذراً، لا تمتلك الصلاحيات الكافية للوصول إلى هذا الإجراء.'
+                'message' => __('messages.forbidden_access')
             ], 403);
         }
 

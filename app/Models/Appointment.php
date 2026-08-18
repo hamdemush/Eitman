@@ -41,4 +41,9 @@ class Appointment extends Model
     {
         return $this->hasOne(Review::class, 'appointment_id');
     }
+
+    public function messages()
+    {
+        return $this->hasMany(Message::class, 'appointment_id');
+    }
 }

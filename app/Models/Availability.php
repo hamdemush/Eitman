@@ -17,6 +17,11 @@ class Availability extends Model
         'is_booked'
     ];
 
+    protected $casts = [
+        'available_date' => 'date',
+        'is_booked' => 'boolean',
+    ];
+
     public function psychologist()
     {
         return $this->belongsTo(User::class, 'psychologist_id');

@@ -35,7 +35,7 @@ class PasswordResetController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Reset token generated successfully.',
+            'message' => __('messages.reset_token_sent'),
             'token' => $token
         ]);
     }
@@ -59,7 +59,7 @@ class PasswordResetController extends Controller
         if (!$record || !Hash::check($request->token, $record->token)) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Invalid token or email matching failed.'
+                'message' => __('messages.invalid_token')
             ], 400);
         }
 
@@ -72,7 +72,7 @@ class PasswordResetController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Password has been successfully updated.'
+            'message' => __('messages.password_reset_success')
         ]);
     }
 }

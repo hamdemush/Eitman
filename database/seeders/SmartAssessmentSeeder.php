@@ -14,6 +14,10 @@ class SmartAssessmentSeeder extends Seeder
         $patients = User::where('role', 'patient')->take(5)->get();
         $specialties = Specialty::all();
 
+        if ($patients->isEmpty() || $specialties->isEmpty()) {
+            return;
+        }
+
         foreach ($patients as $index => $patient) {
             SmartAssessment::create([
                 'patient_id' => $patient->id,

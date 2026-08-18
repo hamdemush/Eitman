@@ -17,6 +17,12 @@ class SmartAssessment extends Model
         'recommended_specialty_id'
     ];
 
+    protected $casts = [
+        'anxiety_score' => 'integer',
+        'stress_score' => 'integer',
+        'depression_score' => 'integer',
+    ];
+
     public function patient()
     {
         return $this->belongsTo(User::class, 'patient_id');

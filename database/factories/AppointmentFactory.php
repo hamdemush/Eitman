@@ -17,7 +17,7 @@ class AppointmentFactory extends Factory
             'patient_id' => User::factory()->patient(),
             'psychologist_id' => User::factory()->psychologist(),
             'availability_id' => Availability::factory(),
-            'status' => 'completed',
+            'status' => fake()->randomElement(['pending', 'confirmed', 'completed', 'cancelled']),
             'session_type' => fake()->randomElement(['text', 'voice', 'video']),
         ];
     }

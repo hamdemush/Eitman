@@ -15,14 +15,22 @@ class AppointmentSeeder extends Seeder
         $psychologists = User::where('role', 'psychologist')->get();
         $sessionTypes = ['text', 'voice', 'video'];
 
+        if ($patients->isEmpty() || $psychologists->isEmpty()) {
+            return;
+        }
+
         for ($i = 0; $i < 7; $i++) {
             $patient = $patients[$i % $patients->count()];
             $psychologist = $psychologists[$i % $psychologists->count()];
-            
+
             $availability = Availability::where('psychologist_id', $psychologist->id)
                 ->where('is_booked', true)
-                ->skip(floor($i / $psychologists->count()))
-                ->first() ?? Availability::factory()->create(['psychologist_id' => $psychologist->id, 'is_booked' => true]);
+                ->skip((int) floor($i / $psychologists->count()))
+                ->first()
+                ?? Availability::factory()->create([
+                    'psychologist_id' => $psychologist->id,
+                    'is_booked' => true,
+                ]);
 
             Appointment::create([
                 'patient_id' => $patient->id,

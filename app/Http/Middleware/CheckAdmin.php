@@ -15,12 +15,12 @@ class CheckAdmin
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function handle(Request $request, Closure$next): Response
+    public function handle(Request $request, Closure $next): Response
     {
         if (!$request->user() || $request->user()->role !== 'admin') {
             return response()->json([
                 'success' => false,
-                'message' => 'عذراً، لا تمتلك صلاحيات مدير النظام.'
+                'message' => __('messages.admin_only')
             ], 403);
         }
 

@@ -2,18 +2,23 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Message extends Model
 {
     use HasFactory;
 
     protected $fillable = [
+        'appointment_id',
         'sender_id',
-        'receiver_id',
-        'message_text',
-        'file_path'
+        'message',
+        'file_path',
+        'is_read',
+    ];
+
+    protected $casts = [
+        'is_read' => 'boolean',
     ];
 
     public function sender()
@@ -21,8 +26,8 @@ class Message extends Model
         return $this->belongsTo(User::class, 'sender_id');
     }
 
-    public function receiver()
+    public function appointment()
     {
-        return $this->belongsTo(User::class, 'receiver_id');
+        return $this->belongsTo(Appointment::class, 'appointment_id');
     }
 }

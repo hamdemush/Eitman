@@ -4,27 +4,27 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Specialization;
+use App\Models\Specialty;
 
-class SpecializationController extends Controller
+class SpecialtyController extends Controller
 {
     /**
-     * Display a listing of the specializations.
+     * Display a listing of the specialties.
      *
      * @return \Illuminate\Http\JsonResponse
      */
     public function index()
     {
-        $specializations = Specialization::all();
+        $specialties = Specialty::all();
         
         return response()->json([
             'status' => 'success',
-            'data' => $specializations
+            'data' => $specialties
         ], 200);
     }
 
     /**
-     * Store a newly created specialization in storage.
+     * Store a newly created specialty in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
@@ -32,47 +32,47 @@ class SpecializationController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|unique:specializations,name|max:255',
+            'name' => 'required|string|unique:specialties,name|max:255',
             'description' => 'nullable|string'
         ]);
 
-        $specialization = Specialization::create([
+        $specialty = Specialty::create([
             'name' => $request->name,
             'description' => $request->description
         ]);
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Specialization created successfully.',
-            'data' => $specialization
+            'message' => __('messages.specialty_created'),
+            'data' => $specialty
         ], 201);
     }
 
     /**
-     * Display the specified specialization.
+     * Display the specified specialty.
      *
      * @param  int  $id
      * @return \Illuminate\Http\JsonResponse
      */
     public function show($id)
     {
-        $specialization = Specialization::find($id);
+        $specialty = Specialty::find($id);
 
-        if (!$specialization) {
+        if (!$specialty) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Specialization not found.'
+                'message' => __('messages.specialty_not_found')
             ], 404);
         }
 
         return response()->json([
             'status' => 'success',
-            'data' => $specialization
+            'data' => $specialty
         ], 200);
     }
 
     /**
-     * Update the specified specialization in storage.
+     * Update the specified specialty in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
@@ -80,54 +80,54 @@ class SpecializationController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $specialization = Specialization::find($id);
+        $specialty = Specialty::find($id);
 
-        if (!$specialization) {
+        if (!$specialty) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Specialization not found.'
+                'message' => __('messages.specialty_not_found')
             ], 404);
         }
 
         $request->validate([
-            'name' => 'required|string|max:255|unique:specializations,name,' . $id,
+            'name' => 'required|string|max:255|unique:specialties,name,' . $id,
             'description' => 'nullable|string'
         ]);
 
-        $specialization->update([
+        $specialty->update([
             'name' => $request->name,
             'description' => $request->description
         ]);
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Specialization updated successfully.',
-            'data' => $specialization
+            'message' => __('messages.specialty_updated'),
+            'data' => $specialty
         ], 200);
     }
 
     /**
-     * Remove the specified specialization from storage.
+     * Remove the specified specialty from storage.
      *
      * @param  int  $id
      * @return \Illuminate\Http\JsonResponse
      */
     public function destroy($id)
     {
-        $specialization = Specialization::find($id);
+        $specialty = Specialty::find($id);
 
-        if (!$specialization) {
+        if (!$specialty) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Specialization not found.'
+                'message' => __('messages.specialty_not_found')
             ], 404);
         }
 
-        $specialization->delete();
+        $specialty->delete();
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Specialization deleted successfully.'
+            'message' => __('messages.specialty_deleted')
         ], 200);
     }
 }

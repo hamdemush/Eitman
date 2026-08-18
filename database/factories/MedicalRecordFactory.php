@@ -15,8 +15,12 @@ class MedicalRecordFactory extends Factory
     {
         return [
             'appointment_id' => Appointment::factory(),
-            'patient_id' => fn (array $attributes) => Appointment::find($attributes['appointment_id'])->patient_id ?? User::factory()->patient(),
-            'psychologist_id' => fn (array $attributes) => Appointment::find($attributes['appointment_id'])->psychologist_id ?? User::factory()->psychologist(),
+            'patient_id' => function (array $attributes) {
+                return Appointment::find($attributes['appointment_id'])?->patient_id ?? User::factory()->patient();
+            },
+            'psychologist_id' => function (array $attributes) {
+                return Appointment::find($attributes['appointment_id'])?->psychologist_id ?? User::factory()->psychologist();
+            },
             'session_notes' => fake('ar_SA')->paragraph(),
             'treatment_plan' => fake('ar_SA')->sentence(),
         ];

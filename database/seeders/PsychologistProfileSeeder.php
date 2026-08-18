@@ -14,6 +14,10 @@ class PsychologistProfileSeeder extends Seeder
         $psychologists = User::where('role', 'psychologist')->get();
         $specialties = Specialty::all();
 
+        if ($psychologists->isEmpty() || $specialties->isEmpty()) {
+            return;
+        }
+
         $bios = [
             'استشاري الطب النفسي مع خبرة تزيد عن 10 سنوات في العلاج السلوكي والاستشارات النفسية.',
             'Licensed Psychologist specializing in Cognitive Behavioral Therapy with extensive international experience.',

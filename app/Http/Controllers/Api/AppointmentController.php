@@ -5,20 +5,31 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Appointment;
+use App\Models\Availability;
 
 class AppointmentController extends Controller
 {
     /**
-     * Display appointments for the current authenticated patient.
+     * Display a listing of appointments for the authenticated user (Patient or Psychologist).
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function patientAppointments(Request $request)
+    public function index(Request $request)
     {
-        $appointments = Appointment::where('patient_id', $request->user()->id)
-            ->with('psychologist.user')
-            ->get();
+        $user = $request->user();
+
+        if ($user->role === 'psychologist') {
+            $appointments = Appointment::where('psychologist_id', $user->id)
+                ->with(['patient', 'availability'])
+                ->latest()
+                ->get();
+        } else {
+            $appointments = Appointment::where('patient_id', $user->id)
+                ->with(['psychologist.psychologistProfile', 'availability'])
+                ->latest()
+                ->get();
+        }
 
         return response()->json([
             'status' => 'success',
@@ -27,25 +38,7 @@ class AppointmentController extends Controller
     }
 
     /**
-     * Display appointments for the current authenticated psychologist.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function psychologistAppointments(Request $request)
-    {
-        $appointments = Appointment::where('psychologist_id', $request->user()->id)
-            ->with('patient')
-            ->get();
-
-        return response()->json([
-            'status' => 'success',
-            'data' => $appointments
-        ], 200);
-    }
-
-    /**
-     * Store a newly booked appointment by a patient.
+     * Book a new appointment.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
@@ -54,27 +47,70 @@ class AppointmentController extends Controller
     {
         $request->validate([
             'psychologist_id' => 'required|exists:users,id',
-            'appointment_date' => 'required|date|after:now',
+            'availability_id' => 'required|exists:availabilities,id',
             'notes' => 'nullable|string'
         ]);
+
+        $availability = Availability::find($request->availability_id);
+
+        if ($availability->is_booked) {
+            return response()->json([
+                'status' => 'error',
+                'message' => __('messages.already_booked')
+            ], 422);
+        }
 
         $appointment = Appointment::create([
             'patient_id' => $request->user()->id,
             'psychologist_id' => $request->psychologist_id,
-            'appointment_date' => $request->appointment_date,
+            'availability_id' => $request->availability_id,
+            'status' => 'pending',
             'notes' => $request->notes,
-            'status' => 'pending'
         ]);
+
+        $availability->update(['is_booked' => true]);
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Appointment booked successfully. Waiting for doctor approval.',
-            'data' => $appointment
+            'message' => __('messages.appointment_booked'),
+            'data' => $appointment->load(['psychologist', 'availability'])
         ], 201);
     }
 
     /**
-     * Update the status of an appointment (Approved / Cancelled / Completed).
+     * Display the specified appointment details.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show(Request $request, $id)
+    {
+        $user = $request->user();
+
+        $appointment = Appointment::where('id', $id)
+            ->where(function ($query) use ($user) {
+                $query->where('patient_id', $user->id)
+                      ->orWhere('psychologist_id', $user->id);
+            })
+            ->with(['patient', 'psychologist.psychologistProfile', 'availability'])
+            ->first();
+
+        if (!$appointment) {
+            return response()->json([
+                'status' => 'error',
+                'message' => __('messages.appointment_not_found')
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $appointment
+        ], 200);
+    }
+
+    /**
+     * Update appointment status (approve, cancel, or complete).
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
@@ -86,24 +122,33 @@ class AppointmentController extends Controller
             'status' => 'required|in:approved,cancelled,completed'
         ]);
 
+        $user = $request->user();
+
         $appointment = Appointment::where('id', $id)
-            ->where('psychologist_id', $request->user()->id)
+            ->where(function ($query) use ($user) {
+                $query->where('patient_id', $user->id)
+                      ->orWhere('psychologist_id', $user->id);
+            })
             ->first();
 
         if (!$appointment) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Appointment not found or unauthorized access.'
+                'message' => __('messages.appointment_not_found')
             ], 404);
         }
 
-        $appointment->update([
-            'status' => $request->status
-        ]);
+        $appointment->status = $request->status;
+        $appointment->save();
+
+        if ($request->status === 'cancelled' && $appointment->availability) {
+            $appointment->availability->update(['is_booked' => false]);
+        }
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Appointment status updated to ' . $request->status . ' successfully.'
+            'message' => __('messages.status_updated'),
+            'data' => $appointment
         ], 200);
     }
 }

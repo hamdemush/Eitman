@@ -15,12 +15,12 @@ class CheckPatient
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function handle(Request $request, Closure$next): Response
+    public function handle(Request $request, Closure $next): Response
     {
         if (!$request->user() || $request->user()->role !== 'patient') {
             return response()->json([
                 'success' => false,
-                'message' => 'عذراً، هذا الإجراء مخصص للمرضى فقط.'
+                'message' => __('messages.patient_only')
             ], 403);
         }
 

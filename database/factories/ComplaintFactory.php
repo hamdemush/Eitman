@@ -16,7 +16,7 @@ class ComplaintFactory extends Factory
             'user_id' => User::factory(),
             'title' => fake('ar_SA')->sentence(4),
             'description' => fake('ar_SA')->paragraph(),
-            'status' => fake()->randomElement(['pending', 'resolved']),
+            'status' => fake()->randomElement(['pending', 'in_progress', 'resolved']),
         ];
     }
 }

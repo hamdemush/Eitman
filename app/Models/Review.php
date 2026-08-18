@@ -17,6 +17,10 @@ class Review extends Model
         'comment'
     ];
 
+    protected $casts = [
+        'rating' => 'integer',
+    ];
+
     public function appointment()
     {
         return $this->belongsTo(Appointment::class, 'appointment_id');

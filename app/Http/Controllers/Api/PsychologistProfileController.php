@@ -20,13 +20,13 @@ class PsychologistProfileController extends Controller
         $user = $request->user();
         
         $profile = PsychologistProfile::where('user_id', $user->id)
-            ->with('specializations')
+            ->with(['specialty', 'user'])
             ->first();
 
         if (!$profile) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Psychologist profile not found. Please create one.'
+                'message' => __('messages.profile_not_found')
             ], 404);
         }
 
@@ -37,7 +37,7 @@ class PsychologistProfileController extends Controller
     }
 
     /**
-     * Create or update the psychologist profile data along with certificates.
+     * Create or update the psychologist profile data along with CV attachment.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
@@ -47,36 +47,33 @@ class PsychologistProfileController extends Controller
         $user = $request->user();
 
         $request->validate([
+            'specialty_id' => 'required|exists:specialties,id',
             'bio' => 'required|string|min:20',
             'experience_years' => 'required|integer|min:0',
-            'license_number' => 'required|string|max:100',
-            'certificate_file' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240', // حد أقصى 10 ميجابايت
-            'specializations' => 'required|array',
-            'specializations.*' => 'exists:specializations,id'
+            'cv_attachment' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
         ]);
 
         $profile = PsychologistProfile::firstOrNew(['user_id' => $user->id]);
 
-        if ($request->hasFile('certificate_file')) {
-            if ($profile->certificate_path) {
-                Storage::disk('public')->delete($profile->certificate_path);
+        if ($request->hasFile('cv_attachment')) {
+            if ($profile->cv_attachment && Storage::disk('public')->exists($profile->cv_attachment)) {
+                Storage::disk('public')->delete($profile->cv_attachment);
             }
             
-            $path = $request->file('certificate_file')->store('certificates', 'public');
-            $profile->certificate_path = $path;
+            $path = $request->file('cv_attachment')->store('cvs', 'public');
+            $profile->cv_attachment = $path;
         }
 
+        $profile->specialty_id = $request->specialty_id;
         $profile->bio = $request->bio;
         $profile->experience_years = $request->experience_years;
-        $profile->license_number = $request->license_number;
-        $profile->is_verified = false; 
+        $profile->is_verified = false;
         $profile->save();
-        $profile->specializations()->sync($request->specializations);
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Psychologist profile saved successfully and pending administrative review.',
-            'data' => $profile->load('specializations')
+            'message' => __('messages.profile_saved'),
+            'data' => $profile->load('specialty')
         ], 200);
     }
 }

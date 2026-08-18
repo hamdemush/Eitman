@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Message;
+use App\Models\Appointment;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -13,10 +14,11 @@ class MessageFactory extends Factory
     public function definition(): array
     {
         return [
+            'appointment_id' => Appointment::factory(),
             'sender_id' => User::factory(),
-            'receiver_id' => User::factory(),
-            'message_text' => fake('ar_SA')->sentence(),
+            'message' => fake('ar_SA')->sentence(),
             'file_path' => null,
+            'is_read' => fake()->boolean(40),
         ];
     }
 }

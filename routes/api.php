@@ -1,77 +1,96 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\PublicDoctorController;
-use App\Http\Controllers\PublicSpecialtyController;
-use App\Http\Controllers\PublicAssessmentController;
+use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\PasswordResetController;
+use App\Http\Controllers\Api\VerificationController;
+use App\Http\Controllers\Api\SpecialtyController;
+use App\Http\Controllers\Api\PsychologistProfileController;
+use App\Http\Controllers\Api\AppointmentController;
+use App\Http\Controllers\Api\SmartAssessmentController;
+use App\Http\Controllers\Api\AdminDashboardController;
+use App\Http\Controllers\Api\ChatController;
+use App\Http\Controllers\Api\NotificationController;
 
-use App\Http\Controllers\Admin\AdminController;
-use App\Http\Controllers\Admin\AdminSpecialtyController;
-
-use App\Http\Controllers\Doctor\DoctorProfileController;
-use App\Http\Controllers\Doctor\DoctorBookingController;
-use App\Http\Controllers\Doctor\DoctorPatientController;
-
-use App\Http\Controllers\Patient\PatientBookingController;
-use App\Http\Controllers\Patient\PatientFileController;
-
-use App\Http\Controllers\Shared\ChatController;
-use App\Http\Controllers\Shared\NotificationController;
+/*
+|--------------------------------------------------------------------------
+| Public Routes (المسارات العامة)
+|--------------------------------------------------------------------------
+*/
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
-Route::post('/password/forgot', [AuthController::class, 'forgotPassword']);
-Route::post('/password/reset', [AuthController::class, 'resetPassword']);
 
-Route::get('/doctors', [PublicDoctorController::class, 'index']);
-Route::get('/doctors/{id}', [PublicDoctorController::class, 'show']);
-Route::get('/specialties', [PublicSpecialtyController::class, 'index']);
-Route::post('/assessment/guest-evaluate', [PublicAssessmentController::class, 'guestEvaluate']);
+Route::post('/password/forgot', [PasswordResetController::class, 'sendResetLink']);
+Route::post('/password/reset', [PasswordResetController::class, 'reset']);
 
+Route::get('/specialties', [SpecialtyController::class, 'index']);
+Route::get('/specialties/{id}', [SpecialtyController::class, 'show']);
+
+
+/*
+|--------------------------------------------------------------------------
+| Protected Routes (المسارات المحمية - Sanctum)
+|--------------------------------------------------------------------------
+*/
 Route::middleware('auth:sanctum')->group(function () {
-    
+
     Route::post('/logout', [AuthController::class, 'logout']);
-
-    Route::middleware('role:patient')->group(function () {
-        Route::get('/patient/bookings', [PatientBookingController::class, 'index']);
-        Route::post('/patient/bookings', [PatientBookingController::class, 'store']);
-        Route::put('/patient/bookings/{id}', [PatientBookingController::class, 'update']);
-        Route::delete('/patient/bookings/{id}', [PatientBookingController::class, 'destroy']);
-
-        Route::get('/patient/medical-file', [PatientFileController::class, 'showMedicalFile']);
-        Route::post('/patient/bookings/{id}/rate', [PatientBookingController::class, 'rateDoctor']);
-        Route::post('/patient/assessment/save', [PublicAssessmentController::class, 'saveResult']);
-    });
-
-    Route::middleware('role:doctor')->group(function () {
-        Route::post('/doctor/apply', [DoctorProfileController::class, 'submitApplication']);
-        Route::put('/doctor/profile', [DoctorProfileController::class, 'updateProfile']);
-        
-        Route::get('/doctor/bookings', [DoctorBookingController::class, 'index']);
-        Route::put('/doctor/bookings/{id}/status', [DoctorBookingController::class, 'changeStatus']);
-        
-        Route::get('/doctor/patients', [DoctorPatientController::class, 'index']);
-        Route::get('/doctor/patients/{id}/history', [DoctorPatientController::class, 'patientHistory']);
-        Route::post('/doctor/patients/{id}/notes', [DoctorPatientController::class, 'addSessionNotes']);
-        Route::post('/doctor/patients/{id}/treatment-plan', [DoctorPatientController::class, 'updatePlan']);
-    });
-
-    Route::middleware('role:admin')->group(function () {
-        Route::get('/admin/doctor-applications', [AdminController::class, 'getPendingDoctors']);
-        Route::put('/admin/doctor-applications/{id}/approve', [AdminController::class, 'approveDoctor']);
-        Route::put('/admin/doctor-applications/{id}/reject', [AdminController::class, 'rejectDoctor']);
-
-        Route::get('/admin/users', [AdminController::class, 'getAllUsers']);
-        Route::delete('/admin/users/{id}', [AdminController::class, 'banUser']);
-        Route::apiResource('/admin/specialties', AdminSpecialtyController::class);
-        Route::get('/admin/reports', [AdminController::class, 'getComplaints']);
-        Route::get('/admin/stats', [AdminController::class, 'getSystemStats']);
-    });
+    Route::post('/email/verify', [VerificationController::class, 'verify']);
+    Route::post('/email/resend', [VerificationController::class, 'resend']);
 
     Route::get('/sessions/{id}/messages', [ChatController::class, 'fetchMessages']);
     Route::post('/sessions/{id}/messages', [ChatController::class, 'sendMessage']);
+
     Route::get('/notifications', [NotificationController::class, 'getUserNotifications']);
+    Route::put('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
+
+    /*
+    |--------------------------------------------------------------------------
+    | Patient Routes (مسارات المريض)
+    |--------------------------------------------------------------------------
+    */
+    Route::middleware('role:patient')->group(function () {
+        Route::get('/patient/appointments', [AppointmentController::class, 'patientAppointments']);
+        Route::post('/patient/appointments', [AppointmentController::class, 'store']);
+        Route::put('/patient/appointments/{id}/status', [AppointmentController::class, 'updateStatus']);
+
+        Route::post('/patient/assessment', [SmartAssessmentController::class, 'submitAssessment']);
+        Route::get('/patient/assessment/history', [SmartAssessmentController::class, 'history']);
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Psychologist Routes (مسارات الطبيب)
+    |--------------------------------------------------------------------------
+    */
+    Route::middleware('role:psychologist')->group(function () {
+        Route::get('/psychologist/profile', [PsychologistProfileController::class, 'showCurrent']);
+        Route::post('/psychologist/profile', [PsychologistProfileController::class, 'storeOrUpdate']);
+
+        Route::get('/psychologist/appointments', [AppointmentController::class, 'psychologistAppointments']);
+        Route::put('/psychologist/appointments/{id}/status', [AppointmentController::class, 'updateStatus']);
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Admin Routes (مسارات مدير النظام)
+    |--------------------------------------------------------------------------
+    */
+    Route::middleware('role:admin')->group(function () {
+        Route::get('/admin/pending-psychologists', [AdminDashboardController::class, 'pendingPsychologists']);
+        Route::put('/admin/psychologists/{id}/approve', [AdminDashboardController::class, 'approvePsychologist']);
+        Route::delete('/admin/psychologists/{id}/reject', [AdminDashboardController::class, 'rejectPsychologist']);
+
+        Route::get('/admin/users', [AdminDashboardController::class, 'indexUsers']);
+        Route::put('/admin/users/{id}/toggle-status', [AdminDashboardController::class, 'toggleUserStatus']);
+
+        Route::get('/admin/stats', [AdminDashboardController::class, 'systemStats']);
+
+        Route::post('/admin/specialties', [SpecialtyController::class, 'store']);
+        Route::put('/admin/specialties/{id}', [SpecialtyController::class, 'update']);
+        Route::delete('/admin/specialties/{id}', [SpecialtyController::class, 'destroy']);
+    });
+
 });

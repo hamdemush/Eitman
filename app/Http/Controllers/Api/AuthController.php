@@ -19,7 +19,7 @@ class AuthController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'confirmed', Password::defaults()],
-            'role' => ['required', 'string', 'in:psychologist,patient'], // الأدمن لا يسجل لنفسه تلقائياً
+            'role' => ['required', 'string', 'in:psychologist,patient'], 
         ]);
 
         $user = User::create([
@@ -42,7 +42,7 @@ class AuthController extends Controller
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
-            'message' => 'User registered successfully. Please verify your email.',
+            'message' => __('messages.register_success'),
             'access_token' => $token,
             'token_type' => 'Bearer',
             'user' => $user
@@ -60,20 +60,20 @@ class AuthController extends Controller
 
         if (! $user || ! Hash::check($validated['password'], $user->password)) {
             throw ValidationException::withMessages([
-                'email' => ['بيانات الاعتماد المدخلة غير صحيحة.'],
+                'email' => [__('messages.invalid_credentials')],
             ]);
         }
 
         if ($user->status === 'suspended') {
             return response()->json([
-                'message' => 'هذا الحساب معطل حالياً. يرجى التواصل مع الدعم الفني.'
+                'message' => __('messages.account_suspended')
             ], 403);
         }
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
-            'message' => 'Login successful',
+            'message' => __('messages.login_success'),
             'access_token' => $token,
             'token_type' => 'Bearer',
             'user' => [
@@ -91,7 +91,7 @@ class AuthController extends Controller
         Auth::user()->currentAccessToken()->delete();
 
         return response()->json([
-            'message' => 'Logged out successfully'
+            'message' => __('messages.logout_success')
         ], 200);
     }
 }

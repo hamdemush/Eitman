@@ -24,7 +24,7 @@ class VerificationController extends Controller
         if ($user->hasVerifiedEmail()) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Email already verified.'
+                'message' => __('messages.email_already_verified')
             ], 400);
         }
 
@@ -32,7 +32,7 @@ class VerificationController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Email verified successfully.'
+            'message' => __('messages.email_verified_success')
         ]);
     }
 
@@ -46,11 +46,10 @@ class VerificationController extends Controller
     {
         $user = $request->user();
 
-        // Prevent resending  already verified
         if ($user->hasVerifiedEmail()) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Email already verified.'
+                'message' => __('messages.email_already_verified')
             ], 400);
         }
 
@@ -58,7 +57,7 @@ class VerificationController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Verification link/OTP sent successfully to your email.'
+            'message' => __('messages.verification_sent')
         ]);
     }
 }

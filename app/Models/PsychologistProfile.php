@@ -18,6 +18,11 @@ class PsychologistProfile extends Model
         'is_verified'
     ];
 
+    protected $casts = [
+        'is_verified' => 'boolean',
+        'experience_years' => 'integer',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');

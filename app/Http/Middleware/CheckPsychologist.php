@@ -15,12 +15,12 @@ class CheckPsychologist
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function handle(Request $request, Closure$next): Response
+    public function handle(Request $request, Closure $next): Response
     {
         if (!$request->user() || $request->user()->role !== 'psychologist') {
             return response()->json([
                 'success' => false,
-                'message' => 'عذراً، هذا الإجراء مخصص للأطباء النفسيين فقط.'
+                'message' => __('messages.psychologist_only')
             ], 403);
         }
 

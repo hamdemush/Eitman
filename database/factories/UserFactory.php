@@ -14,11 +14,7 @@ class UserFactory extends Factory
 {
     protected $model = User::class;
 
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
+    
     public function definition(): array
     {
         return [
@@ -32,14 +28,34 @@ class UserFactory extends Factory
         ];
     }
 
-    /**
-     * Indicate that the model's email address should be unverified.
-     */
+    public function patient(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => 'patient',
+        ]);
+    }
+
+    public function psychologist(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => 'psychologist',
+        ]);
+    }
+
+    public function admin(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => 'admin',
+        ]);
+    }
+
     public function unverified(): static
     {
         return $this->state(fn (array $attributes) => [
             'email_verified_at' => null,
             'role' => 'patient',
+
         ]);
     }
-}
+
+    }

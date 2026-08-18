@@ -12,6 +12,10 @@ class ComplaintSeeder extends Seeder
     {
         $patients = User::where('role', 'patient')->take(2)->get();
 
+        if ($patients->count() < 2) {
+            return;
+        }
+
         Complaint::create([
             'user_id' => $patients[0]->id,
             'title' => 'مشكلة في الاتصال الصوتي',

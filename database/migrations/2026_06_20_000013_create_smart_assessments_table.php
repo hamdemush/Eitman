@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('smart_assessments', function (Blueprint $table) {
@@ -19,12 +16,9 @@ return new class extends Migration
             $table->integer('depression_score')->default(0);
             $table->foreignId('recommended_specialty_id')->nullable()->constrained('specialties')->onDelete('set null');
             $table->timestamps();
-});
+        });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('smart_assessments');
