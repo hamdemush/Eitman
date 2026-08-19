@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\Api\AdminController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\PasswordResetController;
 use App\Http\Controllers\Api\VerificationController;
@@ -12,6 +13,7 @@ use App\Http\Controllers\Api\SmartAssessmentController;
 use App\Http\Controllers\Api\AdminDashboardController;
 use App\Http\Controllers\Api\ChatController;
 use App\Http\Controllers\Api\NotificationController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -37,7 +39,7 @@ Route::get('/specialties/{id}', [SpecialtyController::class, 'show']);
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/logout', [AuthController::class, 'logout']);
-    Route::post('/email/verify', [VerificationController::class, 'verify']);
+    Route::post('/email/verify', [VerificationController::class, 'verify'])->name('verification.verify');
     Route::post('/email/resend', [VerificationController::class, 'resend']);
 
     Route::get('/sessions/{id}/messages', [ChatController::class, 'fetchMessages']);
@@ -78,15 +80,15 @@ Route::middleware('auth:sanctum')->group(function () {
     | Admin Routes (مسارات مدير النظام)
     |--------------------------------------------------------------------------
     */
+    
     Route::middleware('role:admin')->group(function () {
-        Route::get('/admin/pending-psychologists', [AdminDashboardController::class, 'pendingPsychologists']);
-        Route::put('/admin/psychologists/{id}/approve', [AdminDashboardController::class, 'approvePsychologist']);
-        Route::delete('/admin/psychologists/{id}/reject', [AdminDashboardController::class, 'rejectPsychologist']);
+        Route::get('/admin/stats', [AdminController::class, 'systemStats']);
+        Route::get('/admin/pending-psychologists', [AdminController::class, 'pendingPsychologists']);
+        Route::put('/admin/psychologists/{id}/approve', [AdminController::class, 'approvePsychologist']);
+        Route::delete('/admin/psychologists/{id}/reject', [AdminController::class, 'rejectPsychologist']);
 
-        Route::get('/admin/users', [AdminDashboardController::class, 'indexUsers']);
-        Route::put('/admin/users/{id}/toggle-status', [AdminDashboardController::class, 'toggleUserStatus']);
-
-        Route::get('/admin/stats', [AdminDashboardController::class, 'systemStats']);
+        Route::get('/admin/users', [AdminController::class, 'indexUsers']);
+        Route::put('/admin/users/{id}/toggle-status', [AdminController::class, 'toggleUserStatus']);
 
         Route::post('/admin/specialties', [SpecialtyController::class, 'store']);
         Route::put('/admin/specialties/{id}', [SpecialtyController::class, 'update']);

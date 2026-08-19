@@ -8,14 +8,12 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use App\Models\User;
+use Carbon\Carbon;
 
 class PasswordResetController extends Controller
 {
     /**
      * Send a reset token to the user's requested email.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
      */
     public function sendResetLink(Request $request)
     {
@@ -23,10 +21,11 @@ class PasswordResetController extends Controller
             'email' => 'required|email|exists:users,email'
         ]);
 
+        $email = strtolower(trim($request->email));
         $token = Str::random(60);
 
         DB::table('password_reset_tokens')->updateOrInsert(
-            ['email' => $request->email],
+            ['email' => $email],
             [
                 'token' => Hash::make($token),
                 'created_at' => now()
@@ -42,33 +41,41 @@ class PasswordResetController extends Controller
 
     /**
      * Reset the user's password using the provided token.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
      */
     public function reset(Request $request)
     {
         $request->validate([
-            'token' => 'required',
+            'token' => 'required|string',
             'email' => 'required|email|exists:users,email',
             'password' => 'required|min:8|confirmed'
         ]);
 
-        $record = DB::table('password_reset_tokens')->where('email', $request->email)->first();
+        $email = strtolower(trim($request->email));
+        $token = trim($request->token);
 
-        if (!$record || !Hash::check($request->token, $record->token)) {
+        $record = DB::table('password_reset_tokens')->where('email', $email)->first();
+
+        if (!$record || !Hash::check($token, $record->token)) {
             return response()->json([
                 'status' => 'error',
                 'message' => __('messages.invalid_token')
             ], 400);
         }
 
-        $user = User::where('email', $request->email)->first();
-        $user->update([
-            'password' => Hash::make($request->password)
-        ]);
+        if (Carbon::parse($record->created_at)->addMinutes(60)->isPast()) {
+            DB::table('password_reset_tokens')->where('email', $email)->delete();
 
-        DB::table('password_reset_tokens')->where('email', $request->email)->delete();
+            return response()->json([
+                'status' => 'error',
+                'message' => __('messages.token_expired')
+            ], 400);
+        }
+
+        $user = User::where('email', $email)->first();
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        DB::table('password_reset_tokens')->where('email', $email)->delete();
 
         return response()->json([
             'status' => 'success',

@@ -9,11 +9,22 @@ use App\Models\PsychologistProfile;
 
 class AdminController extends Controller
 {
-    /**
-     * Get a list of pending psychologist profiles waiting for approval.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
+    
+    public function systemStats()
+    {
+        return response()->json([
+            'status' => 'success',
+            'message' => 'System statistics retrieved successfully.',
+            'data' => [
+                'total_users' => User::count(),
+                'total_patients' => User::where('role', 'patient')->count(),
+                'total_psychologists' => User::where('role', 'psychologist')->count(),
+                'pending_psychologists' => PsychologistProfile::where('is_verified', false)->count(),
+            ]
+        ], 200);
+    }
+
+   
     public function pendingPsychologists()
     {
         $profiles = PsychologistProfile::where('is_verified', false)
@@ -27,12 +38,7 @@ class AdminController extends Controller
         ], 200);
     }
 
-    /**
-     * Approve a psychologist application.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
-     */
+    
     public function approvePsychologist($id)
     {
         $profile = PsychologistProfile::find($id);
@@ -54,12 +60,7 @@ class AdminController extends Controller
         ], 200);
     }
 
-    /**
-     * Reject a psychologist application.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
-     */
+    
     public function rejectPsychologist($id)
     {
         $profile = PsychologistProfile::find($id);
@@ -79,13 +80,8 @@ class AdminController extends Controller
         ], 200);
     }
 
-    /**
-     * Get all registered users with option to filter by role.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function listUsers(Request $request)
+    
+    public function indexUsers(Request $request)
     {
         $query = User::query();
 
@@ -100,14 +96,14 @@ class AdminController extends Controller
             'data' => $users
         ], 200);
     }
-
-    /**
+     /**
      * Toggle or update user account status (active/inactive).
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\JsonResponse
      */
+
     public function toggleUserStatus(Request $request, $id)
     {
         $request->validate([
