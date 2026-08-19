@@ -15,11 +15,7 @@ use App\Http\Controllers\Api\ChatController;
 use App\Http\Controllers\Api\NotificationController;
 
 
-/*
-|--------------------------------------------------------------------------
-| Public Routes (المسارات العامة)
-|--------------------------------------------------------------------------
-*/
+
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -31,11 +27,7 @@ Route::get('/specialties', [SpecialtyController::class, 'index']);
 Route::get('/specialties/{id}', [SpecialtyController::class, 'show']);
 
 
-/*
-|--------------------------------------------------------------------------
-| Protected Routes (المسارات المحمية - Sanctum)
-|--------------------------------------------------------------------------
-*/
+
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/logout', [AuthController::class, 'logout']);
@@ -48,11 +40,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/notifications', [NotificationController::class, 'getUserNotifications']);
     Route::put('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
 
-    /*
-    |--------------------------------------------------------------------------
-    | Patient Routes (مسارات المريض)
-    |--------------------------------------------------------------------------
-    */
+    
     Route::middleware('role:patient')->group(function () {
         Route::get('/patient/appointments', [AppointmentController::class, 'patientAppointments']);
         Route::post('/patient/appointments', [AppointmentController::class, 'store']);
@@ -62,11 +50,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/patient/assessment/history', [SmartAssessmentController::class, 'history']);
     });
 
-    /*
-    |--------------------------------------------------------------------------
-    | Psychologist Routes (مسارات الطبيب)
-    |--------------------------------------------------------------------------
-    */
+    
     Route::middleware('role:psychologist')->group(function () {
         Route::get('/psychologist/profile', [PsychologistProfileController::class, 'showCurrent']);
         Route::post('/psychologist/profile', [PsychologistProfileController::class, 'storeOrUpdate']);
@@ -74,12 +58,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/psychologist/appointments', [AppointmentController::class, 'psychologistAppointments']);
         Route::put('/psychologist/appointments/{id}/status', [AppointmentController::class, 'updateStatus']);
     });
+ 
 
-    /*
-    |--------------------------------------------------------------------------
-    | Admin Routes (مسارات مدير النظام)
-    |--------------------------------------------------------------------------
-    */
     
     Route::middleware('role:admin')->group(function () {
         Route::get('/admin/stats', [AdminController::class, 'systemStats']);
