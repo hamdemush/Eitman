@@ -42,7 +42,7 @@
     </button>
     <div class="dash-user">
       <div class="avatar">م.ع</div>
-      <div><b>د. مريم العلي</b><span>علاج سلوكي معرفي</span></div>
+      <div><b>د. روان الأسي</b><span>علاج سلوكي معرفي</span></div>
     </div>
     <nav class="dash-nav">
       <a href="dashboard.html">
@@ -60,6 +60,10 @@
       <a href="patient-notes.html">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12h6M9 16h6M9 8h6M5 3h11l3 3v15H5z"/></svg>
         <span data-i18n="sidebar.patients">المرضي</span>
+      </a>
+      <a href="chat.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.5 8.5 0 01-12.3 7.6L3 20l1-5.6A8.5 8.5 0 1121 11.5z"/></svg>
+        <span data-i18n="sidebar.chat">الدردشة</span>
       </a>
       <a href="profile.html">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0116 0"/></svg>
@@ -79,7 +83,7 @@
     </button>
     <div class="dash-head">
       <div><h1>أوقات العمل</h1><p>حدّد الأوقات المتاحة لاستقبال جلسات جديدة خلال الأسبوع.</p></div>
-      <button class="btn btn-primary btn-sm">حفظ التغييرات</button>
+      <button class="btn btn-primary btn-sm" id="saveScheduleBtn">حفظ التغييرات</button>
     </div>
 
     <div class="panel">
@@ -130,12 +134,21 @@
     </div>
 
     <div class="panel" style="background:var(--lav-100); border-color:var(--lav-200);">
-      <h4 style="margin-bottom:8px;">ملاحظة للربط مع backend</h4>
+      <h4 style="margin-bottom:8px;">ملاحظة للربط مع الخلفية</h4>
       <p style="font-size:13px;">هذه الشبكة تمثيل بصري فقط. يفترض أن تُحفظ التغييرات عبر API مخصص لجدول أوقات كل معالج، وأن يُعاد جلبها ديناميكيًا بدل القيم الثابتة أعلاه.</p>
     </div>
   </main>
 </div>
 
 <script src="../../assets/js/main.js"></script>
+<div class="toast" id="scheduleToast"></div>
+<script>
+  document.getElementById('saveScheduleBtn').addEventListener('click', () => {
+    const toast = document.getElementById('scheduleToast');
+    toast.textContent = 'تم حفظ أوقات العمل بنجاح.';
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2200);
+  });
+</script>
 </body>
 </html>

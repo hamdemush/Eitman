@@ -14,6 +14,7 @@
   <script src="../../assets/js/theme-switcher.js"></script>
   <script src="../../assets/js/translations.js"></script>
   <script src="../../assets/js/i18n.js"></script>
+  <script src="../../assets/js/store.js"></script>
 </head>
 <body>
 
@@ -42,7 +43,7 @@
     </button>
     <div class="dash-user">
       <div class="avatar">م.ع</div>
-      <div><b>د. روان الاسي</b><span>علاج سلوكي معرفي</span></div>
+      <div><b>د. روان الأسي</b><span>علاج سلوكي معرفي</span></div>
     </div>
     <nav class="dash-nav">
       <a href="dashboard.html">
@@ -60,6 +61,10 @@
       <a href="patient-notes.html" class="active">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12h6M9 16h6M9 8h6M5 3h11l3 3v15H5z"/></svg>
         <span data-i18n="sidebar.patients">المرضي</span>
+      </a>
+      <a href="chat.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.5 8.5 0 01-12.3 7.6L3 20l1-5.6A8.5 8.5 0 1121 11.5z"/></svg>
+        <span data-i18n="sidebar.chat">الدردشة</span>
       </a>
       <a href="profile.html">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0116 0"/></svg>
@@ -83,51 +88,130 @@
 
     <div class="dash-grid">
       <div>
-        <div class="panel">
+        <div class="panel" id="patientListPanel">
           <h3>قائمة المرضى النشطين</h3>
-          <div class="session-item">
-            <div class="avatar">س.أ</div>
-            <div style="flex:1;"><b>نور محمد</b><span>6 جلسات — القلق والتوتر الدراسي</span></div>
-            <span class="pill upcoming">نشط</span>
-          </div>
-          <div class="session-item">
-            <div class="avatar">ط</div>
-            <div style="flex:1;"><b>مريض مجهول #A214</b><span>3 جلسات — الاحتراق الأكاديمي</span></div>
-            <span class="pill upcoming">نشط</span>
-          </div>
-          <div class="session-item">
-            <div class="avatar">ط</div>
-            <div style="flex:1;"><b>مريضة مجهولة #B091</b><span>1 جلسة — اضطرابات النوم الخفيفة</span></div>
-            <span class="pill pending">جديد</span>
-          </div>
+          <div id="patientList"></div>
         </div>
       </div>
 
       <div>
-        <!-- Session notes / treatment plan form for the selected patient
-             (نور محمد in this mockup). In the real app this panel loads
-             dynamically based on which patient is clicked on the left. -->
+        <!-- Session notes / treatment plan form for the selected patient.
+             Loads dynamically based on which patient is clicked on the
+             left, and persists per-patient via Store.savePatientNote(). -->
         <div class="panel">
-          <h3>السجل العلاجي — نور محمد</h3>
-          <div class="field">
-            <label>ملاحظات الجلسة الأخيرة (9 يوليو)</label>
-            <textarea rows="4" style="width:100%; padding:13px 16px; border-radius:12px; border:1.5px solid var(--border); font-family:inherit; font-size:14px; background:var(--bg-card); color:var(--ink-900);">تحسّن ملحوظ في التعامل مع أفكار القلق قبل الامتحانات. الاستمرار في تمارين التنفس اليومية ومتابعة سجل الأفكار الأسبوعي.</textarea>
+          <h3 id="notesHeading">السجل العلاجي</h3>
+          <div id="noPatientSelected" style="display:none; color:var(--ink-500); font-size:14px;">اختر مريضًا من القائمة لعرض سجله وكتابة ملاحظة جديدة.</div>
+          <div id="notesForm">
+            <div class="field">
+              <label>ملاحظة جلسة جديدة</label>
+              <textarea id="newNoteText" rows="4" style="width:100%; padding:13px 16px; border-radius:12px; border:1.5px solid var(--border); font-family:inherit; font-size:14px; background:var(--bg-card); color:var(--ink-900);" placeholder="اكتب ملاحظاتك عن الجلسة هنا..."></textarea>
+            </div>
+            <div class="field">
+              <label>الخطة العلاجية</label>
+              <select id="newNotePlan" style="width:100%;">
+                <option>علاج سلوكي معرفي — مرحلة إعادة الهيكلة المعرفية</option>
+                <option>علاج سلوكي معرفي — مرحلة التعرض التدريجي</option>
+                <option>متابعة ومراقبة فقط</option>
+              </select>
+            </div>
+            <button class="btn btn-primary btn-block" id="saveNoteBtn">حفظ الملاحظات</button>
           </div>
-          <div class="field">
-            <label>الخطة العلاجية</label>
-            <select style="width:100%;">
-              <option>علاج سلوكي معرفي — مرحلة إعادة الهيكلة المعرفية</option>
-              <option>علاج سلوكي معرفي — مرحلة التعرض التدريجي</option>
-              <option>متابعة ومراقبة فقط</option>
-            </select>
-          </div>
-          <button class="btn btn-primary btn-block">حفظ الملاحظات</button>
+
+          <h3 style="margin-top:26px;">سجل الملاحظات السابقة</h3>
+          <div id="notesHistory"></div>
         </div>
       </div>
     </div>
   </main>
 </div>
 
+<div class="toast" id="notesToast"></div>
+
 <script src="../../assets/js/main.js"></script>
+<script>
+  (function () {
+    const therapistId = Store.getCurrentTherapistId();
+    const patientListEl = document.getElementById('patientList');
+    const notesHeading = document.getElementById('notesHeading');
+    const notesForm = document.getElementById('notesForm');
+    const noPatientSelected = document.getElementById('noPatientSelected');
+    const notesHistory = document.getElementById('notesHistory');
+    let activePatientId = null;
+
+    function showToast(text) {
+      const toast = document.getElementById('notesToast');
+      toast.textContent = text;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2200);
+    }
+
+    function renderPatientList() {
+      const sessions = Store.getAcceptedSessionsForTherapist(therapistId);
+      patientListEl.innerHTML = '';
+      if (sessions.length === 0) {
+        patientListEl.innerHTML = '<p style="font-size:13px; color:var(--ink-500);">لا يوجد مرضى نشطون حاليًا. اقبل طلب استشارة أولًا.</p>';
+        return;
+      }
+      sessions.forEach((s) => {
+        const p = s.patient;
+        const item = document.createElement('div');
+        item.className = 'session-item' + (s.patientId === activePatientId ? ' selected-row' : '');
+        item.style.cursor = 'pointer';
+        item.dataset.patientId = s.patientId;
+        item.innerHTML =
+          '<div class="avatar">' + (p ? p.initials : 'ط') + '</div>' +
+          '<div style="flex:1;"><b>' + (p ? p.name : 'مريض') + '</b><span>' + (s.sessionsCount || 1) + ' جلسات — ' + s.topic + '</span></div>' +
+          '<span class="pill upcoming">نشط</span>';
+        item.addEventListener('click', () => selectPatient(s.patientId, p ? p.name : 'مريض'));
+        patientListEl.appendChild(item);
+      });
+      // auto-select first patient
+      if (!activePatientId && sessions.length > 0) {
+        selectPatient(sessions[0].patientId, sessions[0].patient ? sessions[0].patient.name : 'مريض');
+      }
+    }
+
+    function selectPatient(patientId, patientName) {
+      activePatientId = patientId;
+      patientListEl.querySelectorAll('.session-item').forEach((el) => {
+        el.style.outline = el.dataset.patientId === patientId ? '2px solid var(--teal-500)' : 'none';
+      });
+      notesHeading.textContent = 'السجل العلاجي — ' + patientName;
+      notesForm.style.display = 'block';
+      noPatientSelected.style.display = 'none';
+      renderNotesHistory();
+    }
+
+    function renderNotesHistory() {
+      const notes = Store.getPatientNotes(activePatientId);
+      notesHistory.innerHTML = '';
+      if (notes.length === 0) {
+        notesHistory.innerHTML = '<p style="font-size:13px; color:var(--ink-500);">لا توجد ملاحظات محفوظة بعد لهذا المريض.</p>';
+        return;
+      }
+      notes.forEach((n) => {
+        const row = document.createElement('div');
+        row.style.cssText = 'border:1px solid var(--border); border-radius:10px; padding:12px 14px; margin-bottom:10px;';
+        row.innerHTML =
+          '<span style="font-size:12px; color:var(--ink-500); display:block; margin-bottom:6px;">' + n.date + ' — ' + n.plan + '</span>' +
+          '<p style="font-size:13.5px; color:var(--ink-700);">' + n.text + '</p>';
+        notesHistory.appendChild(row);
+      });
+    }
+
+    document.getElementById('saveNoteBtn').addEventListener('click', () => {
+      if (!activePatientId) return;
+      const text = document.getElementById('newNoteText').value.trim();
+      const plan = document.getElementById('newNotePlan').value;
+      if (!text) { showToast('يرجى كتابة الملاحظة أولًا.'); return; }
+      Store.savePatientNote(activePatientId, { text, plan });
+      document.getElementById('newNoteText').value = '';
+      renderNotesHistory();
+      showToast('تم حفظ الملاحظات بنجاح.');
+    });
+
+    renderPatientList();
+  })();
+</script>
 </body>
 </html>

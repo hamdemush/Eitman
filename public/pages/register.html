@@ -14,6 +14,7 @@
   <script src="../assets/js/theme-switcher.js"></script>
   <script src="../assets/js/translations.js"></script>
   <script src="../assets/js/i18n.js"></script>
+  <script src="../assets/js/store.js"></script>
 </head>
 <body>
 
@@ -25,7 +26,7 @@
       <a href="specialists.html" data-i18n="nav.specialists">ابحث عن معالج</a>
       <a href="articles.html" data-i18n="nav.articles">المقالات</a>
       <a href="about.html" data-i18n="nav.about">معلومات عنا</a>
-      <a href="emergency.html" class="active" data-i18n="nav.emergency">حالات الطوارئ</a>
+      <a href="emergency.html" data-i18n="nav.emergency">حالات الطوارئ</a>
     </nav>
     <div class="header-actions">
       <a href="login.html" class="link-muted" data-i18n="nav.login">تسجيل الدخول</a>
@@ -37,9 +38,6 @@
         <button class="icon-btn lang-toggle-btn" type="button" aria-label="Change language">
           <span class="lang-toggle-label">EN</span>
         </button>
-          <button class="nav-toggle" aria-label="فتح القائمة">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
-      </button>
       </div>
     </div>
   </div>
@@ -47,7 +45,7 @@
 
 <div class="auth-wrap">
 
-  <div class="auth-side" style="background-image: linear-gradient(160deg, rgba(15,105,95,.87), rgba(#006480)), url('../assets/images/abstract-waves-bg.png'); background-size: cover; background-position: center;">
+  <div class="auth-side" style="background-image: linear-gradient(160deg, rgba(15,105,95,.87), rgba(10,38,36,.92)), url('../assets/images/abstract-waves-bg.png'); background-size: cover; background-position: center;">
     <span class="badge" style="background:rgba(255,255,255,.12); color:#fff; border-color:rgba(255,255,255,.2);">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a5 5 0 00-5 5v1.1A4 4 0 003 12a4 4 0 002 3.46V17a3 3 0 003 3h1"/><path d="M12 2a5 5 0 015 5v1.1A4 4 0 0121 12a4 4 0 01-2 3.46V17a3 3 0 01-3 3h-1"/></svg>
       خطوتك الأولى نحو الاطمئنان
@@ -68,13 +66,21 @@
 
   <div class="auth-form-side">
     <div class="auth-card">
-      <h1 data-i18n="register.title">إنشاء حساب مريض</h1>
-      <p data-i18n="register.subtitle">املأ بياناتك، ثم أجب على استبيان قصير لنرشّح لك المعالج المناسب.</p>
+      <h1 id="registerTitle" data-i18n="register.title">إنشاء حساب مريض</h1>
+      <p id="registerSubtitle" data-i18n="register.subtitle">املأ بياناتك، ثم أجب على استبيان قصير لنرشّح لك المعالج المناسب.</p>
 
-      <!-- NOTE: front-end mockup only. Submitting goes to the e-mail
-           verification step first, then to the assessment questionnaire;
-           a real submit handler will call the sign-up API instead. -->
-      <form onsubmit="event.preventDefault(); window.location.href='verify-email.html';">
+      <div class="role-tabs" role="tablist">
+        <div class="role-tab selected" id="roleTabPatient" data-i18n="register.rolePatient">مريض</div>
+        <div class="role-tab" id="roleTabTherapist" data-i18n="register.roleTherapist">معالج</div>
+      </div>
+
+      <!-- NOTE: front-end mockup only. For patients, submitting goes to the
+           e-mail verification step then the assessment questionnaire. For
+           therapists, the certificates/experience entered below are saved
+           via Store.registerTherapist() so they immediately appear in the
+           doctor dashboard (pages/doctor/profile.html) — a real submit
+           handler will call the sign-up API instead. -->
+      <form id="registerForm">
         <div class="field-row">
           <div class="field">
             <label for="fname" data-i18n="register.firstName">الاسم الأول</label>
@@ -89,7 +95,35 @@
           <label for="email" data-i18n="login.emailLabel">البريد الإلكتروني </label>
           <input type="email" id="email" name="email" placeholder="name@university.edu" required>
         </div>
-        
+
+        <!-- Therapist-only fields: specialty, years of experience, bio, and
+             the certificates/experience-documents upload section requested. -->
+        <div class="role-only" id="therapistFields">
+          <div class="field-row">
+            <div class="field">
+              <label for="specialty" data-i18n="register.specialty">التخصص الدقيق</label>
+              <input type="text" id="specialty" name="specialty" placeholder="مثال: علاج سلوكي معرفي (CBT)">
+            </div>
+            <div class="field">
+              <label for="expYears" data-i18n="register.expYears">سنوات الخبرة</label>
+              <input type="number" id="expYears" name="expYears" min="0" placeholder="مثال: 4">
+            </div>
+          </div>
+          <div class="field">
+            <label for="bio" data-i18n="register.bio">نبذة تعريفية مختصرة</label>
+            <textarea id="bio" name="bio" rows="3" style="width:100%; padding:13px 16px; border-radius:12px; border:1.5px solid var(--border); font-family:inherit; font-size:14px; background:var(--bg-card); color:var(--ink-900);" placeholder="اكتب نبذة عن خبرتك ومجال تخصصك"></textarea>
+          </div>
+          <div class="field">
+            <label data-i18n="register.certificates">الشهادات والخبرات (يمكن إرفاق أكثر من ملف)</label>
+            <label class="upload-box" for="certificateInput">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin:0 auto 8px;"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><path d="M17 8l-5-5-5 5"/><path d="M12 3v12"/></svg>
+              <div data-i18n="register.uploadHint">اضغط هنا لإرفاق شهاداتك (PDF أو صورة) أو أي مستند يثبت خبرتك</div>
+              <input type="file" id="certificateInput" multiple accept=".pdf,.jpg,.jpeg,.png">
+            </label>
+            <div class="upload-file-list" id="uploadFileList"></div>
+          </div>
+        </div>
+
         <div class="field-row">
           <div class="field">
             <label for="password" data-i18n="login.passwordLabel">كلمة المرور</label>
@@ -126,10 +160,10 @@
   <div class="container footer-row">
   
     <div class="footer-links">
-      <a href="pages/privacy.html" data-i18n="footer.privacy">سياسة الخصوصية</a>
-      <a href="pages/terms.html" data-i18n="footer.terms">شروط الخدمة</a>
-      <a href="pages/emergency.html" data-i18n="footer.support">تواصل مع الدعم</a>
-      <a href="#" data-i18n="footer.careers">الوظائف</a>
+      <a href="privacy.html" data-i18n="footer.privacy">سياسة الخصوصية</a>
+      <a href="terms.html" data-i18n="footer.terms">شروط الخدمة</a>
+      <a href="emergency.html" data-i18n="footer.support">تواصل مع الدعم</a>
+      <a href="#" data-i18n="footer.careers" title="قريبًا" onclick="event.preventDefault();">الوظائف</a>
     </div>
     <div class="footer-brand">
       <b>Etma'en | إطمئن</b><br>
@@ -139,5 +173,92 @@
 </footer>
 
 <script src="../assets/js/main.js"></script>
+<script>
+  (function () {
+    const patientTab = document.getElementById('roleTabPatient');
+    const therapistTab = document.getElementById('roleTabTherapist');
+    const therapistFields = document.getElementById('therapistFields');
+    const title = document.getElementById('registerTitle');
+    const subtitle = document.getElementById('registerSubtitle');
+    const form = document.getElementById('registerForm');
+    const certInput = document.getElementById('certificateInput');
+    const fileListEl = document.getElementById('uploadFileList');
+    let role = 'patient';
+    let certificateFiles = [];
+
+    function setRole(newRole) {
+      role = newRole;
+      const isTherapist = role === 'therapist';
+      patientTab.classList.toggle('selected', !isTherapist);
+      therapistTab.classList.toggle('selected', isTherapist);
+      therapistFields.classList.toggle('active', isTherapist);
+      title.textContent = isTherapist ? 'إنشاء حساب معالج' : 'إنشاء حساب مريض';
+      subtitle.textContent = isTherapist
+        ? 'أدخل بياناتك المهنية وأرفق شهاداتك وخبراتك ليراجعها فريق الإدارة قبل التفعيل.'
+        : 'املأ بياناتك، ثم أجب على استبيان قصير لنرشّح لك المعالج المناسب.';
+      document.getElementById('specialty').required = isTherapist;
+    }
+
+    patientTab.addEventListener('click', () => setRole('patient'));
+    therapistTab.addEventListener('click', () => setRole('therapist'));
+
+    certInput.addEventListener('change', () => {
+      certificateFiles = certificateFiles.concat(Array.from(certInput.files));
+      renderFileList();
+      certInput.value = '';
+    });
+
+    function renderFileList() {
+      fileListEl.innerHTML = '';
+      certificateFiles.forEach((f, i) => {
+        const row = document.createElement('div');
+        row.className = 'upload-file-item';
+        row.innerHTML = '<span>📎 ' + f.name + '</span>';
+        const removeBtn = document.createElement('button');
+        removeBtn.type = 'button';
+        removeBtn.textContent = '×';
+        removeBtn.addEventListener('click', () => {
+          certificateFiles.splice(i, 1);
+          renderFileList();
+        });
+        row.appendChild(removeBtn);
+        fileListEl.appendChild(row);
+      });
+    }
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const fname = document.getElementById('fname').value.trim();
+      const lname = document.getElementById('lname').value.trim();
+      const email = document.getElementById('email').value.trim();
+
+      if (role === 'therapist') {
+        Store.registerTherapist({
+          name: 'د. ' + fname + ' ' + lname,
+          email: email,
+          specialty: document.getElementById('specialty').value.trim(),
+          experienceYears: Number(document.getElementById('expYears').value) || 0,
+          bio: document.getElementById('bio').value.trim(),
+          certificateFiles: certificateFiles
+        });
+        // NOTE: a real back-end would flag the account "pending review" and
+        // notify the admin panel (pages/admin/therapists.html) instead of
+        // going straight to email verification.
+        window.location.href = 'verify-email.html';
+      } else {
+        // Persist the real registration so it shows up (with real data,
+        // status "pending") in pages/admin/users.html + patient-profile.html —
+        // see Store.registerPatient in assets/js/store.js.
+        const anonCheckbox = document.querySelector('.anon-checkbox');
+        Store.registerPatient({
+          name: fname + ' ' + lname,
+          email: email,
+          anonymousMode: !!(anonCheckbox && anonCheckbox.checked)
+        });
+        window.location.href = 'verify-email.html';
+      }
+    });
+  })();
+</script>
 </body>
 </html>

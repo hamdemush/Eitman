@@ -21,7 +21,9 @@
   <div class="container">
     <a href="../../index.html" class="logo"><img src="../../assets/images/logo-icon.png" alt="إطمئن" class="logo-mark"> إطمئن</a>
     <nav class="main-nav">
-      <span style="font-weight:800; color:var(--teal-700); font-size:14px;">بوابة المريض</span>
+      <a href="../../index.html" data-i18n="nav.home">الرئيسية</a>
+      <a href="../specialists.html" data-i18n="nav.specialists">ابحث عن معالج</a>
+      <a href="../articles.html" data-i18n="nav.articles">المقالات</a>
     </nav>
     <div class="header-actions">
       <div class="toggle-group">
@@ -31,10 +33,11 @@
         </button>
         <button class="icon-btn lang-toggle-btn" type="button" aria-label="Change language"><span class="lang-toggle-label">EN</span></button>
       </div>
-      <div class="avatar" style="width:40px;height:40px;font-size:13px;">ن.م</div>
+      <div class="avatar" style="width:40px;height:40px;font-size:13px;">س.أ</div>
     </div>
   </div>
 </header>
+
 <div class="dash-layout">
   <div class="dash-overlay"></div>
   <aside class="dash-sidebar" id="dashSidebar">
@@ -43,7 +46,7 @@
     </button>
     <div class="dash-user">
       <div class="avatar">س.أ</div>
-      <div><b>نور محمد</b><span>فلسطين </span></div>
+      <div><b>خليل أبو رمضان</b><span>الجامعة الأردنية</span></div>
     </div>
     <nav class="dash-nav">
       <a href="dashboard.html">
@@ -54,6 +57,10 @@
       <a href="sessions.html">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>
         <span data-i18n="sidebar.mySessions">جلساتي</span>
+      </a>
+      <a href="chat.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.5 8.5 0 01-12.3 7.6L3 20l1-5.6A8.5 8.5 0 1121 11.5z"/></svg>
+        <span data-i18n="sidebar.chat">الدردشة</span>
       </a>
       <a href="progress.html">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18M7 15l4-5 3 3 5-6"/></svg>
@@ -82,10 +89,10 @@
     <div class="panel" style="max-width:640px;">
       <h3>المعلومات الشخصية</h3>
       <div class="field-row">
-        <div class="field"><label>الاسم الأول</label><input type="text" value="نور"></div>
-        <div class="field"><label>اسم العائلة</label><input type="text" value="محمد"></div>
+        <div class="field"><label>الاسم الأول</label><input type="text" value="سارة"></div>
+        <div class="field"><label>اسم العائلة</label><input type="text" value="أحمد"></div>
       </div>
-      <div class="field"><label>البريد الإلكتروني </label><input type="email" value="noor.mohammed@ju.edu.jo" disabled></div>
+      <div class="field"><label>البريد الإلكتروني </label><input type="email" value="sara.ahmad@ju.edu.jo" disabled></div>
     </div>
 
     <div class="panel" style="max-width:640px;">
@@ -100,13 +107,49 @@
     <div class="panel" style="max-width:640px; background:#FDECEC; border-color:#F3C9C9;">
       <h3 style="color:#9A2B2B;">منطقة الخطر</h3>
       <p style="font-size:13.5px; margin-bottom:16px;">حذف حسابك سيؤدي إلى إزالة جميع بياناتك وسجل جلساتك بشكل نهائي.</p>
-      <button class="btn btn-block" style="background:#C23B3B; color:#fff;">حذف الحساب</button>
+      <button class="btn btn-block" style="background:#C23B3B; color:#fff;" id="deleteAccountBtn">حذف الحساب</button>
     </div>
 
-    <button class="btn btn-primary" style="max-width:200px;">حفظ التغييرات</button>
+    <button class="btn btn-primary" style="max-width:200px;" id="saveSettingsBtn">حفظ التغييرات</button>
   </main>
 </div>
 
+<div class="modal-overlay" id="deleteAccountModal">
+  <div class="modal-box">
+    <h3>تأكيد حذف الحساب</h3>
+    <p>سيتم حذف حسابك وجميع بياناتك وسجل جلساتك بشكل نهائي ولا يمكن التراجع عن هذا الإجراء. هل تريد المتابعة؟</p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="cancelDeleteBtn">إلغاء</button>
+      <button class="btn btn-danger" id="confirmDeleteBtn">حذف نهائيًا</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="settingsToast"></div>
+
 <script src="../../assets/js/main.js"></script>
+<script>
+  (function () {
+    function showToast(text) {
+      const toast = document.getElementById('settingsToast');
+      toast.textContent = text;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2200);
+    }
+
+    document.getElementById('saveSettingsBtn').addEventListener('click', () => {
+      showToast('تم حفظ إعدادات الخصوصية بنجاح.');
+    });
+
+    const modal = document.getElementById('deleteAccountModal');
+    document.getElementById('deleteAccountBtn').addEventListener('click', () => modal.classList.add('open'));
+    document.getElementById('cancelDeleteBtn').addEventListener('click', () => modal.classList.remove('open'));
+    modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('open'); });
+    document.getElementById('confirmDeleteBtn').addEventListener('click', () => {
+      modal.classList.remove('open');
+      showToast('تم حذف الحساب. سيتم تحويلك للصفحة الرئيسية...');
+      setTimeout(() => { window.location.href = '../../index.html'; }, 1800);
+    });
+  })();
+</script>
 </body>
 </html>

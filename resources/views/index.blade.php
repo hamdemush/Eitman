@@ -66,7 +66,7 @@
 
     <!-- Illustration: calm meditation-in-the-forest artwork. -->
     <div class="hero-visual">
-      <img  src="assets/images/meditation-river.jpg" alt="شخص يتأمل بهدوء وسط أشجار الغابة" style="width:100%; height:100%; object-fit:cover; display:block;">
+      <img src="assets/images/meditation-river.jpg" alt="شخص يتأمل بهدوء وسط أشجار الغابة" style="width:100%; height:100%; object-fit:cover; display:block;">
     </div>
 
     <div class="hero-copy">
@@ -139,7 +139,7 @@
 <!-- =========================================================
      HOW IT WORKS SECTION
      ========================================================= -->
-<section class="section">
+<section class="section" id="how" style="background:#fff; border-top:1px solid var(--border); border-bottom:1px solid var(--border);">
   <div class="container">
     <div class="section-head">
       <h2 data-i18n="home.howTitle">كيف تبدأ رحلتك؟</h2>
@@ -190,10 +190,10 @@
       <div class="specialist-card">
         <div class="specialist-top">
           <div class="specialist-id">
-            <h4>د. نور بلبل</h4>
+            <h4>د. نوة السعد</h4>
             <span class="role">أخصائية علاقات أسرية</span>
           </div>
-          <div class="avatar">ن.ب</div>
+          <div class="avatar">ن.س</div>
         </div>
         <div class="rating"><span class="stars">★★★★★</span> (210) 4.8</div>
         <p>تساعد في تحسين جودة العلاقات الاجتماعية وبناء المهارات الحياتية للشباب.</p>
@@ -203,10 +203,10 @@
       <div class="specialist-card">
         <div class="specialist-top">
           <div class="specialist-id">
-            <h4>د. خميس الاسي</h4>
+            <h4>د. خميس الأسي</h4>
             <span class="role">استشاري الطب النفسي</span>
           </div>
-          <div class="avatar">خ.ا</div>
+          <div class="avatar">خ.ه</div>
         </div>
         <div class="rating"><span class="stars">★★★★★</span> (85) 5.0</div>
         <p>خبير في اضطرابات النوم والاكتئاب الموسمي، مع خبرة تزيد عن 15 عاماً.</p>
@@ -216,13 +216,13 @@
       <div class="specialist-card">
         <div class="specialist-top">
           <div class="specialist-id">
-            <h4>د. روان الاسي</h4>
+            <h4>د. روان الأسي</h4>
             <span class="role">أخصائية علاج سلوكي معرفي</span>
           </div>
-          <div class="avatar">ر.ا</div>
+          <div class="avatar">م.ع</div>
         </div>
         <div class="rating"><span class="stars">★★★★★</span> (120) 4.9</div>
-        <p>متخصصة في علاج القلق والتوتر الدراسي لدى الطلاب بأساليب حديثة ومبتكرة.</p>
+        <p>متخصصة في علاج القلق والتوتر الدراسي لدى المرضى بأساليب حديثة ومبتكرة.</p>
         <a href="pages/specialist-profile.html" class="btn btn-ghost btn-block btn-sm" data-i18n="btn.viewProfile">عرض الملف الشخصي</a>
       </div>
 
@@ -236,7 +236,7 @@
 <section class="container" style="padding-bottom:80px;">
   <div class="cta-banner">
     <h2 data-i18n="home.ctaTitle">هل أنت مستعد لتغيير حياتك؟</h2>
-    <p data-i18n="home.ctaDesc">انضم إلى آلاف الأشخاص الذين وجدوا راحتهم النفسية معنا. الجلسة الأولى مجانية  %.</p>
+    <p data-i18n="home.ctaDesc">انضم إلى آلاف المرضى الذين وجدوا راحتهم النفسية معنا. الجلسة الأولى مجانية  %.</p>
     <div class="cta-actions">
       <a href="pages/emergency.html" class="btn btn-outline-white" data-i18n="home.ctaTalk">تحدث الآن حالة طارئة</a>
       <a href="pages/register.html" class="btn btn-light" data-i18n="home.ctaRegister">سجل الآن</a>
@@ -254,7 +254,7 @@
       <a href="pages/privacy.html" data-i18n="footer.privacy">سياسة الخصوصية</a>
       <a href="pages/terms.html" data-i18n="footer.terms">شروط الخدمة</a>
       <a href="pages/emergency.html" data-i18n="footer.support">تواصل مع الدعم</a>
-      <a href="#" data-i18n="footer.careers">الوظائف</a>
+      <a href="#" data-i18n="footer.careers" title="قريبًا" onclick="event.preventDefault();">الوظائف</a>
     </div>
     <div class="footer-brand">
       <b>Etma'en | إطمئن</b><br>

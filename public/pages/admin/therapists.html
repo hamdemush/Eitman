@@ -14,6 +14,7 @@
   <script src="../../assets/js/theme-switcher.js"></script>
   <script src="../../assets/js/translations.js"></script>
   <script src="../../assets/js/i18n.js"></script>
+  <script src="../../assets/js/store.js"></script>
 </head>
 <body>
 
@@ -92,83 +93,76 @@
             <th>الإجراء</th>
           </tr>
         </thead>
-        <tbody>
-          <tr>
-            <td>
-              <div class="table-row-user">
-                <div class="avatar" style="width:34px;height:34px;font-size:12px;">ع.ر</div>
-                <span>د. نور محمد</span>
-              </div>
-            </td>
-            <td>إرشاد أسري</td>
-            <td>7 يوليو 2026</td>
-            <td><span class="pill pending">قيد المراجعة</span></td>
-            <td>
-              <div class="table-actions">
-                <button class="approve">قبول</button>
-                <button class="reject">رفض</button>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <div class="table-row-user">
-                <div class="avatar" style="width:34px;height:34px;font-size:12px;">ف.ن</div>
-                <span>د. وسيم الاسي</span>
-              </div>
-            </td>
-            <td>طب نفسي عام</td>
-            <td>5 يوليو 2026</td>
-            <td><span class="pill pending">قيد المراجعة</span></td>
-            <td>
-              <div class="table-actions">
-                <button class="approve">قبول</button>
-                <button class="reject">رفض</button>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <div class="table-row-user">
-                <div class="avatar" style="width:34px;height:34px;font-size:12px;">م.ع</div>
-                <span>د. روان نبيل</span>
-              </div>
-            </td>
-            <td>علاج سلوكي معرفي</td>
-            <td>10 يونيو 2026</td>
-            <td><span class="pill approved">معتمد</span></td>
-            <td><div class="table-actions"><button>عرض الملف</button></div></td>
-          </tr>
-          <tr>
-            <td>
-              <div class="table-row-user">
-                <div class="avatar" style="width:34px;height:34px;font-size:12px;">خ.ه</div>
-                <span>د. محمد الهاشم</span>
-              </div>
-            </td>
-            <td>استشاري الطب النفسي</td>
-            <td>2 يونيو 2026</td>
-            <td><span class="pill approved">معتمد</span></td>
-            <td><div class="table-actions"><button>عرض الملف</button></div></td>
-          </tr>
-          <tr>
-            <td>
-              <div class="table-row-user">
-                <div class="avatar" style="width:34px;height:34px;font-size:12px;">س.ك</div>
-                <span>د. خميس الاسي</span>
-              </div>
-            </td>
-            <td>طب نفسي عام</td>
-            <td>28 مايو 2026</td>
-            <td><span class="pill rejected">مرفوض</span></td>
-            <td><div class="table-actions"><button>عرض السبب</button></div></td>
-          </tr>
-        </tbody>
+        <tbody id="approvalsBody"></tbody>
       </table>
     </div>
   </main>
 </div>
 
+<div class="toast" id="therapistsToast"></div>
+
 <script src="../../assets/js/main.js"></script>
+<script src="../../assets/js/admin-common.js"></script>
+<script>
+  (function () {
+    const tbody = document.getElementById('approvalsBody');
+
+    function initials(name) {
+      const parts = (name || '').replace('د. ', '').split(' ');
+      return (parts[0] ? parts[0][0] : '') + '.' + (parts[1] ? parts[1][0] : '');
+    }
+
+    function render() {
+      const pending = Store.getPendingTherapists();
+      const approved = Store.getApprovedTherapists();
+      const frozen = Store.getFrozenTherapists();
+      const rejected = Store.getRejectedTherapists();
+
+      tbody.innerHTML = '';
+
+      pending.forEach((a) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML =
+          '<td><div class="table-row-user"><div class="avatar" style="width:34px;height:34px;font-size:12px;">' + initials(a.name) + '</div><span>' + AdminUI.escapeHtml(a.name) + '</span></div></td>' +
+          '<td>' + AdminUI.escapeHtml(a.specialty || '—') + '</td><td>' + AdminUI.escapeHtml(a.submittedLabel || '—') + '</td>' +
+          '<td><span class="pill pending">قيد المراجعة</span></td>' +
+          '<td><div class="table-actions"><a href="therapist-profile.html?id=' + encodeURIComponent(a.id) + '&source=' + a.source + '">عرض الملف</a></div></td>';
+        tbody.appendChild(tr);
+      });
+
+      approved.forEach((t) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML =
+          '<td><div class="table-row-user"><div class="avatar" style="width:34px;height:34px;font-size:12px;">' + (t.initials || initials(t.name)) + '</div><span>' + AdminUI.escapeHtml(t.name) + '</span></div></td>' +
+          '<td>' + AdminUI.escapeHtml(t.specialty || '—') + '</td><td>—</td>' +
+          '<td><span class="pill approved">معتمد</span></td>' +
+          '<td><div class="table-actions"><a href="therapist-profile.html?id=' + encodeURIComponent(t.id) + '&source=approved">عرض الملف</a></div></td>';
+        tbody.appendChild(tr);
+      });
+
+      frozen.forEach((t) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML =
+          '<td><div class="table-row-user"><div class="avatar" style="width:34px;height:34px;font-size:12px;">' + (t.initials || initials(t.name)) + '</div><span>' + AdminUI.escapeHtml(t.name) + '</span></div></td>' +
+          '<td>' + AdminUI.escapeHtml(t.specialty || '—') + '</td><td>—</td>' +
+          '<td><span class="pill frozen">مجمّد</span></td>' +
+          '<td><div class="table-actions"><a href="therapist-profile.html?id=' + encodeURIComponent(t.id) + '&source=approved">عرض الملف</a></div></td>';
+        tbody.appendChild(tr);
+      });
+
+      rejected.forEach((r) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML =
+          '<td><div class="table-row-user"><div class="avatar" style="width:34px;height:34px;font-size:12px;">' + initials(r.name) + '</div><span>' + AdminUI.escapeHtml(r.name) + '</span></div></td>' +
+          '<td>' + AdminUI.escapeHtml(r.specialty || '—') + '</td><td>—</td>' +
+          '<td><span class="pill rejected">مرفوض</span></td>' +
+          '<td><div class="table-actions"><a href="therapist-profile.html?id=' + encodeURIComponent(r.id) + '&source=rejected">عرض السبب</a></div></td>';
+        tbody.appendChild(tr);
+      });
+    }
+
+    render();
+  })();
+</script>
 </body>
 </html>

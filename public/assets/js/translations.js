@@ -78,7 +78,7 @@ const TRANSLATIONS = {
     "home.specialistsDesc": "نخبة من الأطباء والمعالجين النفسيين المرخصين.",
 
     "home.ctaTitle": "هل أنت مستعد لتغيير حياتك؟",
-    "home.ctaDesc": "انضم إلى آلاف الطلاب الذين وجدوا راحتهم النفسية معنا. الجلسة الأولى دائماً بخصم 50%.",
+    "home.ctaDesc": "انضم إلى آلاف المرضى الذين وجدوا راحتهم النفسية معنا. الجلسة الأولى دائماً بخصم 50%.",
     "home.ctaTalk": "تحدث معنا",
     "home.ctaRegister": "سجل الآن",
 
@@ -100,7 +100,7 @@ const TRANSLATIONS = {
     "login.createAccount": "أنشئ حسابًا جديدًا",
 
     /* -------------------- Register -------------------- */
-    "register.title": "إنشاء حساب طالب",
+    "register.title": "إنشاء حساب مريض",
     "register.subtitle": "املأ بياناتك، ثم أجب على استبيان قصير لنرشّح لك المعالج المناسب.",
     "register.firstName": "الاسم الأول",
     "register.lastName": "اسم العائلة",
@@ -114,6 +114,13 @@ const TRANSLATIONS = {
     "register.privacy": "سياسة الخصوصية",
     "register.submit": "إنشاء الحساب ومتابعة الاستبيان",
     "register.haveAccount": "لديك حساب بالفعل؟",
+    "register.rolePatient": "مريض",
+    "register.roleTherapist": "معالج",
+    "register.specialty": "التخصص الدقيق",
+    "register.expYears": "سنوات الخبرة",
+    "register.bio": "نبذة تعريفية مختصرة",
+    "register.certificates": "الشهادات والخبرات (يمكن إرفاق أكثر من ملف)",
+    "register.uploadHint": "اضغط هنا لإرفاق شهاداتك (PDF أو صورة) أو أي مستند يثبت خبرتك",
 
     /* -------------------- Forgot / reset / verify -------------------- */
     "forgot.title": "نسيت كلمة المرور؟",
@@ -153,7 +160,7 @@ const TRANSLATIONS = {
 
     /* -------------------- About / Articles / Emergency -------------------- */
     "about.title": "من نحن",
-    "about.subtitle": "منصة إطمئن هي مبادرة رقمية لدعم الصحة النفسية لطلبة الجامعات والشباب.",
+    "about.subtitle": "منصة إطمئن هي مبادرة رقمية لدعم الصحة النفسية للمرضى والشباب.",
     "articles.title": "المقالات",
     "articles.subtitle": "محتوى توعوي في الصحة النفسية يكتبه فريقنا من المختصين.",
     "emergency.title": "هل تمر بحالة طارئة؟",
@@ -169,6 +176,7 @@ const TRANSLATIONS = {
     "sidebar.requests": "طلبات الاستشارة",
     "sidebar.schedule": "أوقات العمل",
     "sidebar.patients": "مرضاي",
+    "sidebar.chat": "الدردشة",
     "sidebar.profile": "الملف الشخصي",
     "sidebar.users": "إدارة المستخدمين",
     "sidebar.therapistApprovals": "اعتماد المعالجين",
@@ -236,7 +244,7 @@ const TRANSLATIONS = {
     "home.specialistsDesc": "A curated selection of licensed doctors and therapists.",
 
     "home.ctaTitle": "Ready to change your life?",
-    "home.ctaDesc": "Join thousands of students who found peace of mind with us. Your first session is always 50% off.",
+    "home.ctaDesc": "Join thousands of patients who found peace of mind with us. Your first session is always 50% off.",
     "home.ctaTalk": "Talk to Us",
     "home.ctaRegister": "Sign Up Now",
 
@@ -258,7 +266,7 @@ const TRANSLATIONS = {
     "login.createAccount": "Create a new account",
 
     /* -------------------- Register -------------------- */
-    "register.title": "Create a Student Account",
+    "register.title": "Create a Patient Account",
     "register.subtitle": "Fill in your details, then complete a short assessment so we can recommend the right therapist.",
     "register.firstName": "First Name",
     "register.lastName": "Last Name",
@@ -272,6 +280,13 @@ const TRANSLATIONS = {
     "register.privacy": "Privacy Policy",
     "register.submit": "Create Account & Continue",
     "register.haveAccount": "Already have an account?",
+    "register.rolePatient": "Patient",
+    "register.roleTherapist": "Therapist",
+    "register.specialty": "Specialty",
+    "register.expYears": "Years of Experience",
+    "register.bio": "Short Bio",
+    "register.certificates": "Certificates & Experience (multiple files allowed)",
+    "register.uploadHint": "Click to attach your certificates (PDF or image) or any proof of experience",
 
     /* -------------------- Forgot / reset / verify -------------------- */
     "forgot.title": "Forgot Your Password?",
@@ -311,7 +326,7 @@ const TRANSLATIONS = {
 
     /* -------------------- About / Articles / Emergency -------------------- */
     "about.title": "About Us",
-    "about.subtitle": "Etma'en is a digital initiative supporting the mental health of university students and young adults.",
+    "about.subtitle": "Etma'en is a digital initiative supporting the mental health of patients and young adults.",
     "articles.title": "Articles",
     "articles.subtitle": "Mental-health awareness content written by our team of specialists.",
     "emergency.title": "Are you in crisis?",
@@ -327,6 +342,7 @@ const TRANSLATIONS = {
     "sidebar.requests": "Consultation Requests",
     "sidebar.schedule": "Working Hours",
     "sidebar.patients": "My Patients",
+    "sidebar.chat": "Chat",
     "sidebar.profile": "Profile",
     "sidebar.users": "Manage Users",
     "sidebar.therapistApprovals": "Therapist Approvals",

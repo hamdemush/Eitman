@@ -36,9 +36,6 @@
         <button class="icon-btn lang-toggle-btn" type="button" aria-label="Change language">
           <span class="lang-toggle-label">EN</span>
         </button>
-          <button class="nav-toggle" aria-label="فتح القائمة">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
-      </button>
       </div>
     </div>
   </div>
@@ -63,7 +60,7 @@
         <button type="submit" class="btn btn-primary btn-block" data-i18n="verify.submit">تأكيد الحساب</button>
       </form>
 
-      <p class="form-foot"><a href="#" data-i18n="verify.resend">لم يصلك الرمز؟ إعادة الإرسال</a></p>
+      <p class="form-foot"><a href="#" id="resendCodeLink" data-i18n="verify.resend">لم يصلك الرمز؟ إعادة الإرسال</a></p>
     </div>
   </div>
 </section>
@@ -71,10 +68,10 @@
   <div class="container footer-row">
   
     <div class="footer-links">
-      <a href="pages/privacy.html" data-i18n="footer.privacy">سياسة الخصوصية</a>
-      <a href="pages/terms.html" data-i18n="footer.terms">شروط الخدمة</a>
-      <a href="pages/emergency.html" data-i18n="footer.support">تواصل مع الدعم</a>
-      <a href="#" data-i18n="footer.careers">الوظائف</a>
+      <a href="privacy.html" data-i18n="footer.privacy">سياسة الخصوصية</a>
+      <a href="terms.html" data-i18n="footer.terms">شروط الخدمة</a>
+      <a href="emergency.html" data-i18n="footer.support">تواصل مع الدعم</a>
+      <a href="#" data-i18n="footer.careers" title="قريبًا" onclick="event.preventDefault();">الوظائف</a>
     </div>
     <div class="footer-brand">
       <b>Etma'en | إطمئن</b><br>
@@ -84,5 +81,19 @@
 </footer>
 
 <script src="../assets/js/main.js"></script>
+<div class="toast" id="resendToast"></div>
+<script>
+  document.getElementById('resendCodeLink').addEventListener('click', (e) => {
+    e.preventDefault();
+    const link = e.currentTarget;
+    link.style.pointerEvents = 'none';
+    link.style.opacity = '.6';
+    const toast = document.getElementById('resendToast');
+    toast.textContent = 'تم إرسال رمز جديد إلى بريدك الإلكتروني.';
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2400);
+    setTimeout(() => { link.style.pointerEvents = ''; link.style.opacity = ''; }, 15000);
+  });
+</script>
 </body>
 </html>

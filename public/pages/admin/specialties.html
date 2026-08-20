@@ -14,6 +14,7 @@
   <script src="../../assets/js/theme-switcher.js"></script>
   <script src="../../assets/js/translations.js"></script>
   <script src="../../assets/js/i18n.js"></script>
+  <script src="../../assets/js/store.js"></script>
 </head>
 <body>
 
@@ -79,7 +80,7 @@
     </button>
     <div class="dash-head">
       <div><h1>إدارة التخصصات</h1><p>التخصصات المستخدمة في الاستبيان الأولي ونظام المطابقة الذكي.</p></div>
-      <button class="btn btn-primary btn-sm">+ إضافة تخصص</button>
+      <button class="btn btn-primary btn-sm" id="addSpecialtyBtn">+ إضافة تخصص</button>
     </div>
 
     <div class="panel">
@@ -93,55 +94,122 @@
             <th>الإجراء</th>
           </tr>
         </thead>
-        <tbody>
-          <tr>
-            <td>القلق والتوتر الدراسي</td>
-            <td>18</td>
-            <td>412</td>
-            <td><span class="pill approved">مفعّل</span></td>
-            <td><div class="table-actions"><button>تعديل</button></div></td>
-          </tr>
-          <tr>
-            <td>الاكتئاب</td>
-            <td>12</td>
-            <td>203</td>
-            <td><span class="pill approved">مفعّل</span></td>
-            <td><div class="table-actions"><button>تعديل</button></div></td>
-          </tr>
-          <tr>
-            <td>العلاقات الأسرية</td>
-            <td>9</td>
-            <td>150</td>
-            <td><span class="pill approved">مفعّل</span></td>
-            <td><div class="table-actions"><button>تعديل</button></div></td>
-          </tr>
-          <tr>
-            <td>اضطرابات النوم</td>
-            <td>7</td>
-            <td>96</td>
-            <td><span class="pill approved">مفعّل</span></td>
-            <td><div class="table-actions"><button>تعديل</button></div></td>
-          </tr>
-          <tr>
-            <td>الاحتراق الأكاديمي</td>
-            <td>6</td>
-            <td>74</td>
-            <td><span class="pill approved">مفعّل</span></td>
-            <td><div class="table-actions"><button>تعديل</button></div></td>
-          </tr>
-          <tr>
-            <td>إدمان الأجهزة الذكية (قيد المراجعة)</td>
-            <td>0</td>
-            <td>0</td>
-            <td><span class="pill pending">غير مفعّل</span></td>
-            <td><div class="table-actions"><button class="approve">تفعيل</button></div></td>
-          </tr>
-        </tbody>
+        <tbody id="specialtiesBody"></tbody>
       </table>
     </div>
   </main>
 </div>
 
+<div class="modal-overlay" id="editModal">
+  <div class="modal-box">
+    <h3>تعديل التخصص</h3>
+    <div class="field" style="margin-bottom:14px;">
+      <label for="editNameInput">اسم التخصص</label>
+      <input type="text" id="editNameInput" style="width:100%; padding:12px 14px; border-radius:12px; border:1.5px solid var(--border); font-family:inherit; font-size:14px; background:var(--bg-card); color:var(--ink-900);">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="editCancelBtn">إلغاء</button>
+      <button class="btn btn-primary" id="editSaveBtn">حفظ التعديلات</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="specialtiesToast"></div>
+
 <script src="../../assets/js/main.js"></script>
+<script src="../../assets/js/admin-common.js"></script>
+<script>
+  (function () {
+    const tbody = document.getElementById('specialtiesBody');
+    const editModal = document.getElementById('editModal');
+    const editNameInput = document.getElementById('editNameInput');
+    let editingId = null;
+
+    function render() {
+      const specialties = Store.getSpecialties();
+      tbody.innerHTML = '';
+      specialties.forEach((sp) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML =
+          '<td>' + AdminUI.escapeHtml(sp.name) + (sp.active ? '' : ' (قيد المراجعة)') + '</td>' +
+          '<td>' + sp.therapistsCount + '</td>' +
+          '<td>' + sp.casesCount + '</td>' +
+          '<td><span class="pill ' + (sp.active ? 'approved' : 'pending') + '">' + (sp.active ? 'مفعّل' : 'غير مفعّل') + '</span></td>' +
+          '<td>' +
+            '<div style="display:flex; gap:8px; align-items:center; justify-content:flex-end;">' +
+            (sp.active ? '' : '<button class="approve" style="border:1.5px solid var(--border); border-radius:8px; padding:6px 12px; font-size:12.5px; background:none; cursor:pointer;" data-action="activate" data-id="' + sp.id + '">تفعيل</button>') +
+            '<div class="action-menu-wrap">' +
+              '<button class="action-menu-trigger" type="button" data-menu-trigger aria-label="خيارات">⋮</button>' +
+              '<div class="action-menu">' +
+                '<button data-action="edit" data-id="' + sp.id + '">✏️ تعديل</button>' +
+                '<button class="danger" data-action="delete" data-id="' + sp.id + '">🗑️ حذف</button>' +
+              '</div>' +
+            '</div>' +
+            '</div>' +
+          '</td>';
+        tbody.appendChild(tr);
+      });
+    }
+
+    tbody.addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-action]');
+      if (!btn) return;
+      const id = btn.getAttribute('data-id');
+      const action = btn.getAttribute('data-action');
+      const sp = Store.getSpecialties().find((s) => s.id === id);
+      if (!sp) return;
+
+      if (action === 'edit') {
+        editingId = id;
+        editNameInput.value = sp.name;
+        editModal.classList.add('open');
+        setTimeout(() => editNameInput.focus(), 50);
+      } else if (action === 'delete') {
+        AdminUI.confirmModal({
+          title: 'حذف التخصص',
+          text: 'سيتم حذف تخصص "' + sp.name + '" نهائيًا من قائمة الاستبيان ونظام المطابقة. هل تريد المتابعة؟',
+          confirmLabel: 'تأكيد الحذف',
+          danger: true,
+          onConfirm: () => {
+            Store.deleteSpecialty(id);
+            render();
+            AdminUI.toast('specialtiesToast', 'تم حذف التخصص بنجاح.');
+          }
+        });
+      } else if (action === 'activate') {
+        Store.toggleSpecialtyActive(id);
+        render();
+        AdminUI.toast('specialtiesToast', 'تم تفعيل التخصص، وأصبح متاحًا في الاستبيان الأولي.');
+      }
+    });
+
+    document.getElementById('editCancelBtn').addEventListener('click', () => editModal.classList.remove('open'));
+    editModal.addEventListener('click', (e) => { if (e.target === editModal) editModal.classList.remove('open'); });
+    document.getElementById('editSaveBtn').addEventListener('click', () => {
+      const newName = editNameInput.value.trim();
+      if (!newName || !editingId) return;
+      Store.updateSpecialtyName(editingId, newName);
+      editModal.classList.remove('open');
+      render();
+      AdminUI.toast('specialtiesToast', 'تم تعديل التخصص بنجاح.');
+    });
+
+    document.getElementById('addSpecialtyBtn').addEventListener('click', () => {
+      AdminUI.reasonModal({
+        title: 'إضافة تخصص جديد',
+        text: 'أدخل اسم التخصص — سيُضاف بحالة "غير مفعّل" حتى تفعيله.',
+        placeholder: 'مثال: صعوبات التعلّم',
+        confirmLabel: 'إضافة',
+        onConfirm: (name) => {
+          Store.addSpecialty(name);
+          render();
+          AdminUI.toast('specialtiesToast', 'تمت إضافة التخصص، وسيظهر بحالة "غير مفعّل" حتى تفعيله.');
+        }
+      });
+    });
+
+    AdminUI.initActionMenus(tbody);
+    render();
+  })();
+</script>
 </body>
 </html>

@@ -14,6 +14,7 @@
   <script src="../../assets/js/theme-switcher.js"></script>
   <script src="../../assets/js/translations.js"></script>
   <script src="../../assets/js/i18n.js"></script>
+  <script src="../../assets/js/store.js"></script>
 </head>
 <body>
 
@@ -78,54 +79,10 @@
       <span data-i18n="sidebar.menu">القائمة</span>
     </button>
     <div class="dash-head">
-      <div><h1>الشكاوى والتقارير</h1><p>بلاغات المرضي والمعالجين، وحالات الطوارئ التي تحتاج متابعة إدارية.</p></div>
+      <div><h1>الشكاوى والتقارير</h1><p>بلاغات المرضى والمعالجين، وحالات الطوارئ التي تحتاج متابعة إدارية.</p></div>
     </div>
 
-    <div class="panel">
-      <div class="session-item">
-        <div class="avatar" style="background:#FDECEC; color:#B03434;">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>
-        </div>
-        <div style="flex:1;">
-          <b>تأخر المعالج عن الموعد</b>
-          <span>بلاغ من طالب مجهول #A214 بحق د. نور محمد — منذ يوم</span>
-        </div>
-        <span class="pill open">مفتوحة</span>
-      </div>
-
-      <div class="session-item">
-        <div class="avatar" style="background:#FDECEC; color:#B03434;">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>
-        </div>
-        <div style="flex:1;">
-          <b>مشكلة تقنية في الدفع</b>
-          <span>بلاغ من خالد الجرجاوي — منذ 3 أيام</span>
-        </div>
-        <span class="pill resolved">تم الحل</span>
-      </div>
-
-      <div class="session-item">
-        <div class="avatar" style="background:#FDF3DA; color:#8A6116;">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>
-        </div>
-        <div style="flex:1;">
-          <b>تصعيد حالة حرجة تلقائيًا</b>
-          <span>رصدها نظام التنبيه الذكي أثناء جلسة نصية — أُحيلت لعيادة الجامعة</span>
-        </div>
-        <span class="pill open">قيد المتابعة</span>
-      </div>
-
-      <div class="session-item">
-        <div class="avatar" style="background:#FDECEC; color:#B03434;">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>
-        </div>
-        <div style="flex:1;">
-          <b>سلوك غير لائق من مريض  تجاه المعالج</b>
-          <span>بلاغ من د. وسيم الاسي — منذ أسبوع</span>
-        </div>
-        <span class="pill resolved">تم الحل</span>
-      </div>
-    </div>
+    <div class="panel" id="complaintsPanel"></div>
 
     <div class="panel" style="background:var(--lav-100); border-color:var(--lav-200);">
       <h4 style="margin-bottom:8px;">نظام التنبيه للحالات الحرجة</h4>
@@ -135,5 +92,32 @@
 </div>
 
 <script src="../../assets/js/main.js"></script>
+<script>
+  (function () {
+    const statusLabels = { open: 'مفتوحة', resolved: 'تم الحل', in_progress: 'قيد المتابعة' };
+    const statusPillClass = { open: 'open', resolved: 'resolved', in_progress: 'open' };
+    const panel = document.getElementById('complaintsPanel');
+
+    function render() {
+      const complaints = Store.getComplaints();
+      panel.innerHTML = '';
+      complaints.forEach((c) => {
+        const item = document.createElement('div');
+        item.className = 'session-item';
+        const isCritical = c.status === 'open' || c.status === 'in_progress';
+        item.innerHTML =
+          '<div class="avatar" style="background:' + (isCritical ? '#FDECEC' : '#FDF3DA') + '; color:' + (isCritical ? '#B03434' : '#8A6116') + ';">' +
+          '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>' +
+          '</div>' +
+          '<div style="flex:1;"><b>' + c.title + '</b><span>بلاغ من ' + c.complainantName + (c.accusedType !== 'system' ? ' بحق ' + c.accusedName : '') + ' — ' + c.dateLabel + '</span></div>' +
+          '<span class="pill ' + statusPillClass[c.status] + '">' + statusLabels[c.status] + '</span>' +
+          '<a href="complaint-details.html?id=' + c.id + '" class="btn btn-ghost btn-sm" style="margin-inline-start:10px;">معاينة</a>';
+        panel.appendChild(item);
+      });
+    }
+
+    render();
+  })();
+</script>
 </body>
 </html>

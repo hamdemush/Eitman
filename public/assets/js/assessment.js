@@ -54,7 +54,39 @@ document.addEventListener('DOMContentLoaded', () => {
     nextButtons.forEach((btn) => { btn.textContent = dict[key]; });
   }
 
+  function showStepError(step) {
+    let warning = step.querySelector('.assess-step-warning');
+    if (!warning) {
+      warning = document.createElement('p');
+      warning.className = 'assess-step-warning';
+      warning.textContent = 'يرجى اختيار إجابة قبل المتابعة.';
+      step.appendChild(warning);
+    }
+    warning.classList.add('show');
+    step.classList.add('shake');
+    setTimeout(() => step.classList.remove('shake'), 400);
+  }
+
+  function clearStepError(step) {
+    const warning = step.querySelector('.assess-step-warning');
+    if (warning) warning.classList.remove('show');
+  }
+
+  function currentStepIsAnswered() {
+    const step = steps[currentIndex];
+    return !!step.querySelector('input[type="radio"]:checked');
+  }
+
   function goToNextStep() {
+    const step = steps[currentIndex];
+    // Require an answer before allowing progression - this was previously
+    // missing, letting people click "التالي" straight through unanswered.
+    if (!currentStepIsAnswered()) {
+      showStepError(step);
+      return;
+    }
+    clearStepError(step);
+
     if (currentIndex < steps.length - 1) {
       currentIndex += 1;
       renderStep();
@@ -81,6 +113,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   nextButtons.forEach((btn) => btn.addEventListener('click', goToNextStep));
   prevButtons.forEach((btn) => btn.addEventListener('click', goToPreviousStep));
+
+  // Clear the "please answer" warning as soon as the person picks an option.
+  if (form) {
+    form.addEventListener('change', (event) => {
+      if (event.target.matches('input[type="radio"]')) {
+        clearStepError(steps[currentIndex]);
+      }
+    });
+  }
 
   // i18n.js already re-translates every [data-i18n] element on toggle; we
   // just need to also refresh this one JS-generated label to match.

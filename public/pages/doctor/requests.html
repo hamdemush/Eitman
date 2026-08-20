@@ -14,6 +14,7 @@
   <script src="../../assets/js/theme-switcher.js"></script>
   <script src="../../assets/js/translations.js"></script>
   <script src="../../assets/js/i18n.js"></script>
+  <script src="../../assets/js/store.js"></script>
 </head>
 <body>
 
@@ -42,7 +43,7 @@
     </button>
     <div class="dash-user">
       <div class="avatar">م.ع</div>
-      <div><b>د. روان الاسي</b><span>علاج سلوكي معرفي</span></div>
+      <div><b>د. روان الأسي</b><span>علاج سلوكي معرفي</span></div>
     </div>
     <nav class="dash-nav">
       <a href="dashboard.html">
@@ -60,6 +61,10 @@
       <a href="patient-notes.html">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12h6M9 16h6M9 8h6M5 3h11l3 3v15H5z"/></svg>
         <span data-i18n="sidebar.patients">المرضي</span>
+      </a>
+      <a href="chat.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.5 8.5 0 01-12.3 7.6L3 20l1-5.6A8.5 8.5 0 1121 11.5z"/></svg>
+        <span data-i18n="sidebar.chat">الدردشة</span>
       </a>
       <a href="profile.html">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0116 0"/></svg>
@@ -81,66 +86,65 @@
       <div><h1>طلبات الاستشارة</h1><p>طلبات وصلتك عبر نظام المطابقة الذكي، بانتظار قبولك.</p></div>
     </div>
 
-    <div class="panel">
-      <div class="session-item">
-        <div class="avatar">ط</div>
-        <div style="flex:1;">
-          <b>خالد الجرجاوي</b>
-          <span>القلق والتوتر الدراسي — منذ شهر تقريبًا — نسبة توافق 92٪</span>
-        </div>
-        <div class="table-actions">
-          <button class="approve">قبول</button>
-          <button class="reject">رفض</button>
-        </div>
-      </div>
-      <div class="session-item">
-        <div class="avatar">ط</div>
-        <div style="flex:1;">
-          <b>علاء غزال </b>
-          <span>الاحتراق الأكاديمي — منذ أسبوعين — نسبة توافق 88٪</span>
-        </div>
-        <div class="table-actions">
-          <button class="approve">قبول</button>
-          <button class="reject">رفض</button>
-        </div>
-      </div>
-      <div class="session-item">
-        <div class="avatar">ط</div>
-        <div style="flex:1;">
-          <b>مريض مجهول#D732</b>
-          <span>اضطرابات النوم الخفيفة — منذ 3 أيام — نسبة توافق 84٪</span>
-        </div>
-        <div class="table-actions">
-          <button class="approve">قبول</button>
-          <button class="reject">رفض</button>
-        </div>
-      </div>
-      <div class="session-item">
-        <div class="avatar">ط</div>
-        <div style="flex:1;">
-          <b>احمد صقر</b>
-          <span>الثقة بالنفس — منذ يومين — نسبة توافق 90٪</span>
-        </div>
-        <div class="table-actions">
-          <button class="approve">قبول</button>
-          <button class="reject">رفض</button>
-        </div>
-      </div>
-      <div class="session-item">
-        <div class="avatar">ط</div>
-        <div style="flex:1;">
-          <b>خليل أبو رمضان </b>
-          <span>علاقة حب فاشلة — منذ يوم — نسبة توافق 95٪</span>
-        </div>
-        <div class="table-actions">
-          <button class="approve">قبول</button>
-          <button class="reject">رفض</button>
-        </div>
-      </div>
+    <div class="panel" id="requestsPanel">
+      <p id="noRequestsMsg" style="display:none; color:var(--ink-500); font-size:14px;">لا توجد طلبات استشارة جديدة حاليًا.</p>
     </div>
   </main>
 </div>
 
+<div class="toast" id="requestsToast"></div>
+
 <script src="../../assets/js/main.js"></script>
+<script>
+  (function () {
+    const therapistId = Store.getCurrentTherapistId();
+    const panel = document.getElementById('requestsPanel');
+    const emptyMsg = document.getElementById('noRequestsMsg');
+
+    function showToast(text) {
+      const toast = document.getElementById('requestsToast');
+      toast.textContent = text;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2200);
+    }
+
+    function render() {
+      const pending = Store.getPendingSessions(therapistId);
+      panel.querySelectorAll('.session-item').forEach((el) => el.remove());
+      emptyMsg.style.display = pending.length === 0 ? 'block' : 'none';
+
+      pending.forEach((session) => {
+        const item = document.createElement('div');
+        item.className = 'session-item';
+        const matchLabel = session.matchPct ? ' — نسبة توافق ' + session.matchPct + '٪' : '';
+        item.innerHTML =
+          '<div class="avatar">' + (session.patient ? session.patient.initials : 'ط') + '</div>' +
+          '<div style="flex:1;"><b>' + (session.patient ? session.patient.name : 'مستخدم') + '</b>' +
+          '<span>' + session.topic + ' — ' + session.requestedLabel + matchLabel + '</span></div>' +
+          '<div class="table-actions">' +
+          '<button class="approve" data-id="' + session.id + '" data-action="accept">قبول</button>' +
+          '<button class="reject" data-id="' + session.id + '" data-action="reject">رفض</button>' +
+          '</div>';
+        panel.appendChild(item);
+      });
+    }
+
+    panel.addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-action]');
+      if (!btn) return;
+      const id = btn.getAttribute('data-id');
+      if (btn.getAttribute('data-action') === 'accept') {
+        Store.acceptSession(id);
+        showToast('تم قبول الطلب، وتم إنشاء محادثة تلقائيًا مع المستخدم.');
+      } else {
+        Store.rejectSession(id);
+        showToast('تم رفض الطلب.');
+      }
+      render();
+    });
+
+    render();
+  })();
+</script>
 </body>
 </html>

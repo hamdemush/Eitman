@@ -37,9 +37,6 @@
         <button class="icon-btn lang-toggle-btn" type="button" aria-label="Change language">
           <span class="lang-toggle-label">EN</span>
         </button>
-          <button class="nav-toggle" aria-label="فتح القائمة">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
-      </button>
       </div>
     </div>
   </div>
@@ -78,7 +75,7 @@
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.8 19.8 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.8 19.8 0 012.12 4.18 2 2 0 014.11 2h3a2 2 0 012 1.72c.13.99.36 1.96.68 2.9a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.18-1.18a2 2 0 012.11-.45c.94.32 1.91.55 2.9.68A2 2 0 0122 16.92z"/></svg>
         </div>
         <div style="flex:1;">
-          <b>خط الإسناد النفسي للمرضي</b>
+          <b>خط الإسناد النفسي للمرضى</b>
           <span>متاح 24/7 — رقم تجريبي يُستبدل برقم الجهة الرسمية عند الإطلاق</span>
         </div>
         <span class="pill upcoming">24/7</span>
@@ -92,15 +89,23 @@
           <b>الدردشة النصية الطارئة عبر إطمئن</b>
           <span>تواصل فوري مع أخصائي مناوب داخل المنصة</span>
         </div>
-        <a href="#" class="btn btn-primary btn-sm">ابدأ الدردشة</a>
+        <a href="patient/chat.html" class="btn btn-primary btn-sm">ابدأ الدردشة</a>
       </div>
 
-      
+      <div class="session-item">
+        <div class="avatar" style="background:var(--mint-100); color:var(--teal-700);">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4.5 8-11.8A8 8 0 004 10.2C4 17.5 12 22 12 22z"/></svg>
+        </div>
+        <div style="flex:1;">
+          <b>عيادة الإرشاد النفسي بالجامعة</b>
+          <span>للمرضى المسجّلين — تنسيق موعد حضوري سريع</span>
+        </div>
+      </div>
     </div>
 
     <div class="question-card" style="background:var(--lav-100); border-color:var(--lav-200);">
       <h4 style="margin-bottom:10px;">ملاحظة لفريق التطوير (Back-end)</h4>
-      <p style="font-size:13.5px;">أرقام الطوارئ أعلاه نائبة (placeholder) لأغراض العرض فقط. عند الربط مع الخلفية، يجب استبدالها بأرقام رسمية معتمدة حسب الدولة، ويفضّل جلبها من إعدادات النظام لا كتابتها مباشرة في HTML.</p>
+      <p style="font-size:13.5px;">أرقام الطوارئ أعلاه نائبة (placeholder) لأغراض العرض فقط. عند الربط مع الخلفية، يجب استبدالها بأرقام رسمية معتمدة حسب الدولة/الجامعة، ويفضّل جلبها من إعدادات النظام لا كتابتها مباشرة في HTML.</p>
     </div>
 
   </div>
@@ -109,10 +114,10 @@
   <div class="container footer-row">
   
     <div class="footer-links">
-      <a href="pages/privacy.html" data-i18n="footer.privacy">سياسة الخصوصية</a>
-      <a href="pages/terms.html" data-i18n="footer.terms">شروط الخدمة</a>
-      <a href="pages/emergency.html" data-i18n="footer.support">تواصل مع الدعم</a>
-      <a href="#" data-i18n="footer.careers">الوظائف</a>
+      <a href="privacy.html" data-i18n="footer.privacy">سياسة الخصوصية</a>
+      <a href="terms.html" data-i18n="footer.terms">شروط الخدمة</a>
+      <a href="emergency.html" data-i18n="footer.support">تواصل مع الدعم</a>
+      <a href="#" data-i18n="footer.careers" title="قريبًا" onclick="event.preventDefault();">الوظائف</a>
     </div>
     <div class="footer-brand">
       <b>Etma'en | إطمئن</b><br>

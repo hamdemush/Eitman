@@ -10,7 +10,8 @@
                 pixel-sampled so the site matches it exactly in both themes.
    ========================================================================== */
 
-
+/* Google Fonts: Cairo for headings/display text, Almarai for body text */
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Almarai:wght@300;400;700;800&display=swap');
 
 :root {
   /* ---- Requested palette (source values) ---- */
@@ -31,7 +32,7 @@
   --teal-100: #d9f7f1;  /* = --secondary-color */
 
   /* ---- Brand colors: Mint (secondary / success) — badges, tags, accents --- */
-  --mint-500: #006480;
+  --mint-500: #46b39c;
   --mint-300: #a7e8da;
   --mint-100: #d9f7f1;  /* = --secondary-color */
 
@@ -94,7 +95,7 @@
 [data-theme="dark"] {
   --bg-page: #0a0f1c;
   --bg-card: #111a2c;
-  --border: #1e35aa;
+  --border: #eef1fb;
 
   --ink-900: #eef1fb;   /* headings on dark surface   */
   --ink-700: #c7cee3;   /* body text on dark surface  */
@@ -111,7 +112,7 @@
      stays legible once those chip backgrounds become translucent below.
      (teal-900 is left untouched: it's only ever used inside dark
      decorative gradients, which should stay dark in both themes.) */
-  --teal-800: #29b6d8;
+  --teal-800: #7fe0d1;
 
   /* indigo text on lavender pills also needs to lighten for contrast */
   --lav-ink: #b7c2ff;
