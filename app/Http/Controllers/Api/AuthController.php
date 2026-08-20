@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\PsychologistProfile;
+use App\Notifications\SendOtpNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
@@ -22,13 +23,19 @@ class AuthController extends Controller
             'role' => ['required', 'string', 'in:psychologist,patient'], 
         ]);
 
+        $otp = rand(100000, 999999);
+
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
             'role' => $validated['role'],
             'status' => 'active', 
+            'otp' => $otp,
+            'otp_expires_at' => now()->addMinutes(10),
         ]);
+
+        Auth::login($user);
 
         if ($user->isPsychologist()) {
             PsychologistProfile::create([
@@ -37,7 +44,7 @@ class AuthController extends Controller
             ]);
         }
 
-        $user->sendEmailVerificationNotification();
+        $user->notify(new SendOtpNotification($otp));
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
@@ -47,6 +54,41 @@ class AuthController extends Controller
             'token_type' => 'Bearer',
             'user' => $user
         ], 201);
+    }
+
+    public function verifyOtp(Request $request)
+    {
+        $validated = $request->validate([
+            'email' => ['required', 'string', 'email'],
+            'otp' => ['required', 'numeric'],
+        ]);
+
+        $user = User::where('email', $validated['email'])
+                    ->where('otp', $validated['otp'])
+                    ->where('otp_expires_at', '>', now())
+                    ->first();
+
+        if (!$user) {
+            return response()->json([
+                'message' => 'رمز التحقق غير صحيح أو انتهت صلاحيته'
+            ], 400);
+        }
+
+        $user->email_verified_at = now();
+        $user->otp = null;
+        $user->otp_expires_at = null;
+        $user->save();
+
+        return response()->json([
+            'message' => 'تم تأكيد البريد الإلكتروني بنجاح',
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'role' => $user->role,
+                'email_verified' => true
+            ]
+        ], 200);
     }
 
     public function login(Request $request)

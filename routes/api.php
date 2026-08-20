@@ -18,6 +18,7 @@ use App\Http\Controllers\Api\NotificationController;
 
 
 Route::post('/register', [AuthController::class, 'register']);
+Route::post('/verify-otp', [AuthController::class, 'verifyOtp']);
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::post('/password/forgot', [PasswordResetController::class, 'sendResetLink']);
@@ -60,7 +61,6 @@ Route::middleware('auth:sanctum')->group(function () {
     });
  
 
-    
     Route::middleware('role:admin')->group(function () {
         Route::get('/admin/stats', [AdminController::class, 'systemStats']);
         Route::get('/admin/pending-psychologists', [AdminController::class, 'pendingPsychologists']);
