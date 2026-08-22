@@ -31,16 +31,15 @@
 
     <nav class="main-nav">
       <a href="/" class="active" data-i18n="nav.home">الرئيسية</a>
-      <a href="/specialists" data-i18n="nav.specialists">ابحث عن معالج</a>
-      <a href="/articles" data-i18n="nav.articles">المقالات</a>
-      <a href="/about" data-i18n="nav.about">معلومات عنا</a>
-      <a href="/emergency" data-i18n="nav.emergency">حالات الطوارئ</a>
+      <a href="/pages/specialists.html" data-i18n="nav.specialists">ابحث عن معالج</a>
+      <a href="/pages/articles.html" data-i18n="nav.articles">المقالات</a>
+      <a href="/pages/about.html" data-i18n="nav.about">معلومات عنا</a>
+      <a href="/pages/emergency.html" data-i18n="nav.emergency">حالات الطوارئ</a>
     </nav>
 
     <div class="header-actions">
-      <a href="/login" class="link-muted" data-i18n="nav.login">تسجيل الدخول</a>
-      <a href="/register" class="btn btn-primary btn-sm" data-i18n="nav.start">ابدأ الآن</a>
-
+      <a href="/pages/login.html" class="link-muted" data-i18n="nav.login">تسجيل الدخول</a>
+      <a href="/pages/register.html" class="btn btn-primary btn-sm" data-i18n="nav.start">ابدأ الآن</a>
       <div class="toggle-group">
         <button class="icon-btn theme-toggle-btn" type="button" aria-label="تبديل الوضع الليلي/النهاري">
           <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1111.2 3 7 7 0 0021 12.8z"/></svg>
@@ -77,7 +76,7 @@
       <h1><span data-i18n="home.heroTitle">رحلة الهدوء تبدأ</span> <span data-i18n="home.heroTitleHighlight">من هنا.</span></h1>
       <p data-i18n="home.heroDesc">منصة "إطمئن" توفر لك مساحة آمنة وخصوصية تامة للتواصل مع نخبة من المعالجين النفسيين المختصين لمساعدتك في تخطي تحدياتك النفسية وتحقيق السلام الداخلي.</p>
       <div class="hero-actions">
-        <a href="pages/assessment.html" class="btn btn-primary">
+        <a href="/pages/assessment.html" class="btn btn-primary">
           <span data-i18n="btn.bookSession">احجز جلستك الأولى</span>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 6l-6 6 6 6"/></svg>
         </a>
