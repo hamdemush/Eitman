@@ -27,19 +27,21 @@
      ========================================================= -->
 <header class="site-header">
   <div class="container">
-    <a href="/" class="logo"><img src="assets/images/logo-icon.png" alt="إطمئن" class="logo-mark"> إطمئن</a>
-
+    <a href="{{ url('/') }}" class="logo">
+    <img src="{{ asset('assets/images/logo-icon.png') }}" alt="إطمئن" class="logo-mark">
+    إطمئن
+</a>
     <nav class="main-nav">
-      <a href="/" class="active" data-i18n="nav.home">الرئيسية</a>
-      <a href="/pages/specialists.html" data-i18n="nav.specialists">ابحث عن معالج</a>
-      <a href="/pages/articles.html" data-i18n="nav.articles">المقالات</a>
-      <a href="/pages/about.html" data-i18n="nav.about">معلومات عنا</a>
-      <a href="/pages/emergency.html" data-i18n="nav.emergency">حالات الطوارئ</a>
+      <a href="{{ url('/') }}" class="active" data-i18n="nav.home">الرئيسية</a>
+      <a href="{{ url('/pages/specialists.html') }}" data-i18n="nav.specialists">ابحث عن معالج</a>
+      <a href="{{ url('/pages/articles.html') }}" data-i18n="nav.articles">المقالات</a>
+      <a href="{{ url('/pages/about.html') }}" data-i18n="nav.about">معلومات عنا</a>
+      <a href="{{ url('/pages/emergency.html') }}" data-i18n="nav.emergency">حالات الطوارئ</a>
     </nav>
 
     <div class="header-actions">
-      <a href="/pages/login.html" class="link-muted" data-i18n="nav.login">تسجيل الدخول</a>
-      <a href="/pages/register.html" class="btn btn-primary btn-sm" data-i18n="nav.start">ابدأ الآن</a>
+      <a href="{{ url('/pages/login.html') }}" class="link-muted" data-i18n="nav.login">تسجيل الدخول</a>
+      <a href="{{ url('/pages/register.html') }}" class="btn btn-primary btn-sm" data-i18n="nav.start">ابدأ الآن</a>
       <div class="toggle-group">
         <button class="icon-btn theme-toggle-btn" type="button" aria-label="تبديل الوضع الليلي/النهاري">
           <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1111.2 3 7 7 0 0021 12.8z"/></svg>
@@ -76,11 +78,11 @@
       <h1><span data-i18n="home.heroTitle">رحلة الهدوء تبدأ</span> <span data-i18n="home.heroTitleHighlight">من هنا.</span></h1>
       <p data-i18n="home.heroDesc">منصة "إطمئن" توفر لك مساحة آمنة وخصوصية تامة للتواصل مع نخبة من المعالجين النفسيين المختصين لمساعدتك في تخطي تحدياتك النفسية وتحقيق السلام الداخلي.</p>
       <div class="hero-actions">
-        <a href="/pages/assessment.html" class="btn btn-primary">
+        <a href="{{ url('/pages/assessment.html') }}" class="btn btn-primary">
           <span data-i18n="btn.bookSession">احجز جلستك الأولى</span>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 6l-6 6 6 6"/></svg>
         </a>
-        <a href="#how" class="btn btn-ghost" data-i18n="btn.howItWorks">كيف نعمل؟</a>
+        <a href="{{ url('/pages/how-it-works.html') }}" class="btn btn-ghost" data-i18n="btn.howItWorks">كيف نعمل؟</a>
       </div>
     </div>
 
@@ -178,8 +180,7 @@
         <h2 data-i18n="home.specialistsTitle">خبراء مستعدون لمساعدتك</h2>
         <p data-i18n="home.specialistsDesc">نخبة من الأطباء والمعالجين النفسيين المرخصين.</p>
       </div>
-      <a href="pages/specialists.html" class="link-arrow">
-        <span data-i18n="btn.viewAll">عرض جميع المعالجين</span>
+      <a href="{{ url('/specialists') }}" class="link-arrow">        <span data-i18n="btn.viewAll">عرض جميع المعالجين</span>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l-6 6 6 6"/></svg>
       </a>
     </div>
@@ -196,7 +197,7 @@
         </div>
         <div class="rating"><span class="stars">★★★★★</span> (210) 4.8</div>
         <p>تساعد في تحسين جودة العلاقات الاجتماعية وبناء المهارات الحياتية للشباب.</p>
-        <a href="pages/specialist-profile.html" class="btn btn-ghost btn-block btn-sm" data-i18n="btn.viewProfile">عرض الملف الشخصي</a>
+        <a href="{{ url('/pages/specialist-profile.html') }}" class="btn btn-ghost btn-block btn-sm" data-i18n="btn.viewProfile">عرض الملف الشخصي</a>
       </div>
 
       <div class="specialist-card">
@@ -209,7 +210,7 @@
         </div>
         <div class="rating"><span class="stars">★★★★★</span> (85) 5.0</div>
         <p>خبير في اضطرابات النوم والاكتئاب الموسمي، مع خبرة تزيد عن 15 عاماً.</p>
-        <a href="pages/specialist-profile.html" class="btn btn-ghost btn-block btn-sm" data-i18n="btn.viewProfile">عرض الملف الشخصي</a>
+        <a href="{{ url('/pages/specialist-profile.html') }}" class="btn btn-ghost btn-block btn-sm" data-i18n="btn.viewProfile">عرض الملف الشخصي</a>
       </div>
 
       <div class="specialist-card">
@@ -222,7 +223,7 @@
         </div>
         <div class="rating"><span class="stars">★★★★★</span> (120) 4.9</div>
         <p>متخصصة في علاج القلق والتوتر الدراسي لدى المرضى بأساليب حديثة ومبتكرة.</p>
-        <a href="pages/specialist-profile.html" class="btn btn-ghost btn-block btn-sm" data-i18n="btn.viewProfile">عرض الملف الشخصي</a>
+        <a href="{{ url('/pages/specialist-profile.html') }}" class="btn btn-ghost btn-block btn-sm" data-i18n="btn.viewProfile">عرض الملف الشخصي</a>
       </div>
 
     </div>
@@ -237,8 +238,8 @@
     <h2 data-i18n="home.ctaTitle">هل أنت مستعد لتغيير حياتك؟</h2>
     <p data-i18n="home.ctaDesc">انضم إلى آلاف المرضى الذين وجدوا راحتهم النفسية معنا. الجلسة الأولى مجانية  %.</p>
     <div class="cta-actions">
-      <a href="pages/emergency.html" class="btn btn-outline-white" data-i18n="home.ctaTalk">تحدث الآن حالة طارئة</a>
-      <a href="pages/register.html" class="btn btn-light" data-i18n="home.ctaRegister">سجل الآن</a>
+      <a href="{{ url('/pages/emergency.html') }}" class="btn btn-outline-white" data-i18n="home.ctaTalk">تحدث الآن حالة طارئة</a>
+      <a href="{{ url('/pages/register.html') }}" class="btn btn-light" data-i18n="home.ctaRegister">سجل الآن</a>
     </div>
   </div>
 </section>
@@ -250,10 +251,10 @@
   <div class="container footer-row">
   
     <div class="footer-links">
-      <a href="pages/privacy.html" data-i18n="footer.privacy">سياسة الخصوصية</a>
-      <a href="pages/terms.html" data-i18n="footer.terms">شروط الخدمة</a>
-      <a href="pages/emergency.html" data-i18n="footer.support">تواصل مع الدعم</a>
-      <a href="#" data-i18n="footer.careers" title="قريبًا" onclick="event.preventDefault();">الوظائف</a>
+      <a href="{{ url('/pages/privacy.html') }}" data-i18n="footer.privacy">سياسة الخصوصية</a>
+      <a href="{{ url('/pages/terms.html') }}" data-i18n="footer.terms">شروط الخدمة</a>
+      <a href="{{ url('/pages/emergency.html') }}" data-i18n="footer.support">تواصل مع الدعم</a>
+      <a href="{{ url('/pages/careers.html') }}" data-i18n="footer.careers" title="قريبًا" onclick="event.preventDefault();">الوظائف</a>
     </div>
     <div class="footer-brand">
       <b>Etma'en | إطمئن</b><br>
