@@ -30,7 +30,7 @@
         </button>
         <button class="icon-btn lang-toggle-btn" type="button" aria-label="Change language"><span class="lang-toggle-label">EN</span></button>
       </div>
-      <div class="avatar" style="width:40px;height:40px;font-size:13px;">أد</div>
+      <div class="avatar" id="header-admin-avatar" style="width:40px;height:40px;font-size:13px;">--</div>
     </div>
   </div>
 </header>
@@ -42,8 +42,11 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
     </button>
     <div class="dash-user">
-      <div class="avatar">أد</div>
-      <div><b>مدير المنصة</b><span>صلاحيات كاملة</span></div>
+      <div class="avatar" id="sidebar-admin-avatar">--</div>
+      <div>
+        <b id="sidebar-admin-name">جاري التحميل...</b>
+        <span id="sidebar-admin-role">---</span>
+      </div>
     </div>
     <nav class="dash-nav">
       <a href="dashboard.html">
@@ -55,7 +58,7 @@
         <span data-i18n="sidebar.therapistApprovals">اعتماد المعالجين</span>
       </a>
       <a href="users.html">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 010 7.75"/></svg>
         <span data-i18n="sidebar.users">إدارة المستخدمين</span>
       </a>
       <a href="specialties.html">
@@ -79,45 +82,28 @@
       <span data-i18n="sidebar.menu">القائمة</span>
     </button>
     <div class="dash-head">
-      <div><h1 id="tTitle">ملف المعالج</h1><p><a href="therapists.html">&rarr; العودة لاعتماد المعالجين</a></p></div>
-      <span class="pill" id="tStatusPill">—</span>
+      <div>
+        <a href="therapists.html" style="font-size:13px; color:var(--teal-700); text-decoration:none;">← العودة لقائمة المعالجين</a>
+        <h1 id="therapistName" style="margin-top:4px;">تفاصيل المعالج</h1>
+      </div>
     </div>
 
-    <div id="notFoundMsg" class="panel" style="display:none;">
-      <p>تعذّر إيجاد هذا الطلب. ربما تم اتخاذ إجراء بشأنه بالفعل أو أن الرابط غير صحيح.</p>
-    </div>
-
-    <div id="detailsWrap">
+    <div class="grid-2">
       <div class="panel">
-        <h3>بيانات التسجيل</h3>
-        <div class="detail-grid">
-          <div class="detail-item"><span>الاسم الكامل</span><b id="fName">—</b></div>
-          <div class="detail-item"><span>البريد الإلكتروني</span><b id="fEmail">—</b></div>
-          <div class="detail-item"><span>رقم الهاتف</span><b id="fPhone">—</b></div>
-          <div class="detail-item"><span>التخصص</span><b id="fSpecialty">—</b></div>
-          <div class="detail-item"><span>المؤهلات العلمية</span><b id="fQualifications">—</b></div>
-          <div class="detail-item"><span>مكان العمل</span><b id="fWorkplace">—</b></div>
-          <div class="detail-item"><span>سنوات الخبرة</span><b id="fExperience">—</b></div>
-          <div class="detail-item"><span>تاريخ التقديم</span><b id="fSubmittedAt">—</b></div>
-        </div>
-        <div class="detail-item" style="margin-top:16px;"><span>نبذة / الخبرات</span><b id="fBio">—</b></div>
-        <div class="detail-item" style="margin-top:16px;"><span>الشهادات والمرفقات</span><b id="fCerts">—</b></div>
-        <p class="status-history" id="fStatusHistory"></p>
+        <h3 style="margin-bottom:12px;">المعلومات المهنية</h3>
+        <p><b>التخصص:</b> <span id="therapistSpec">--</span></p>
+        <p><b>رقم الترخيص:</b> <span id="therapistLic">--</span></p>
+        <p><b>الخبرة:</b> <span id="therapistExp">--</span></p>
       </div>
 
-      <div class="panel" id="actionsPanel">
-        <h3>إجراءات إدارة المعالج</h3>
-        <div style="display:flex; flex-wrap:wrap; gap:10px;">
-          <button class="btn btn-primary" id="acceptBtn" style="display:none;">قبول المعالج</button>
-          <button class="btn btn-ghost" id="rejectBtn" style="display:none;">رفض المعالج</button>
-          <button class="btn btn-danger" id="freezeBtn" style="display:none;">تجميد الحساب</button>
-        </div>
+      <div class="panel">
+        <h3 style="margin-bottom:12px;">الإجراءات الإدارية</h3>
+        <button class="btn btn-primary" id="approveBtn" style="width:100%; margin-bottom:8px;">قبول واعتمد</button>
+        <button class="btn btn-outline" id="rejectBtn" style="width:100%; color:var(--rose-700); border-color:var(--rose-200);">رفض الطلب</button>
       </div>
     </div>
   </main>
 </div>
-
-<div class="toast" id="tToast"></div>
 
 <script src="../../assets/js/main.js"></script>
 <script src="../../assets/js/admin-common.js"></script>
@@ -125,133 +111,27 @@
   (function () {
     const params = new URLSearchParams(window.location.search);
     const id = params.get('id');
-    const source = params.get('source'); // 'mock' | 'real' | 'approved' | 'rejected'
+    const pending = Store.getPendingTherapists();
+    const t = pending.find(x => x.id === id) || pending[0] || {};
 
-    function load() {
-      if (source === 'approved') return { data: Store.getTherapist(id), bucket: 'approved' };
-      if (source === 'rejected') return { data: Store.getRejectedTherapists().find((r) => r.id === id) || null, bucket: 'rejected' };
-      return { data: Store.getTherapistApplication(id, source), bucket: 'pending' };
-    }
+    document.getElementById('therapistName').textContent = t.name || 'معالج';
+    document.getElementById('therapistSpec').textContent = t.specialty || '—';
+    document.getElementById('therapistLic').textContent = t.licenseNumber || '—';
+    document.getElementById('therapistExp').textContent = t.experience || '—';
 
-    let { data: t, bucket } = load();
-
-    if (!t) {
-      document.getElementById('detailsWrap').style.display = 'none';
-      document.getElementById('tStatusPill').style.display = 'none';
-      document.getElementById('notFoundMsg').style.display = 'block';
-      return;
-    }
-
-    function certsText(certs) {
-      if (!certs || !certs.length) return 'لا توجد شهادات مرفقة';
-      return certs.map((c) => c.name + (c.fileName ? ' (' + c.fileName + ')' : '')).join('، ');
-    }
-
-    function render() {
-      document.getElementById('tTitle').textContent = 'ملف ' + t.name;
-      document.getElementById('fName').textContent = t.name || '—';
-      document.getElementById('fEmail').textContent = t.email || '—';
-      document.getElementById('fPhone').textContent = t.phone || '—';
-      document.getElementById('fSpecialty').textContent = t.specialty || '—';
-      document.getElementById('fQualifications').textContent = t.qualifications || '—';
-      document.getElementById('fWorkplace').textContent = t.workplace || '—';
-      document.getElementById('fExperience').textContent = (t.experienceYears || t.experienceYears === 0) ? (t.experienceYears + ' سنوات') : '—';
-      document.getElementById('fSubmittedAt').textContent = t.submittedAt || t.submittedLabel || '—';
-      document.getElementById('fBio').textContent = t.bio || '—';
-      document.getElementById('fCerts').textContent = certsText(t.certificates);
-
-      const pill = document.getElementById('tStatusPill');
-      const status = bucket === 'rejected' ? 'rejected' : (t.status || 'pending');
-      pill.textContent = AdminUI.therapistStatusLabel[status] || status;
-      pill.className = 'pill ' + (AdminUI.therapistStatusPill[status] || 'pending');
-
-      let historyMsg = '';
-      if (bucket === 'rejected') historyMsg = 'تم رفض المعالج: ' + t.reason + (t.rejectedAt ? ' — ' + t.rejectedAt : '');
-      else if (status === 'verified') historyMsg = 'تم قبول المعالج بعد التحقق من البيانات والشهادات.' + (t.statusAt ? ' — ' + t.statusAt : '');
-      else if (status === 'frozen') historyMsg = 'تم تجميد الحساب' + (t.statusReason ? ' — السبب: ' + t.statusReason : '') + (t.statusAt ? ' — ' + t.statusAt : '');
-      else historyMsg = 'الطلب قيد المراجعة ولم يُتخذ أي إجراء بعد.';
-      document.getElementById('fStatusHistory').textContent = historyMsg;
-
-      const acceptBtn = document.getElementById('acceptBtn');
-      const rejectBtn = document.getElementById('rejectBtn');
-      const freezeBtn = document.getElementById('freezeBtn');
-      const actionsPanel = document.getElementById('actionsPanel');
-
-      acceptBtn.style.display = rejectBtn.style.display = freezeBtn.style.display = 'none';
-      if (bucket === 'pending') {
-        acceptBtn.style.display = 'inline-flex';
-        rejectBtn.style.display = 'inline-flex';
-      } else if (bucket === 'approved' && status === 'verified') {
-        freezeBtn.style.display = 'inline-flex';
-      }
-      actionsPanel.style.display = (bucket === 'rejected' || (bucket === 'approved' && status === 'frozen')) ? 'none' : 'block';
-    }
-
-    render();
-
-    document.getElementById('acceptBtn').addEventListener('click', () => {
-      AdminUI.confirmModal({
-        title: 'قبول المعالج',
-        text: 'سيتم اعتماد "' + t.name + '" وتفعيل حسابه على المنصة.',
-        confirmLabel: 'تأكيد القبول',
-        onConfirm: () => {
-          const result = Store.approveTherapist(t.id, source);
-          if (result) {
-            t = result; bucket = 'approved';
-            render();
-            AdminUI.toast('tToast', 'تم قبول المعالج بعد التحقق من البيانات والشهادات.');
-          }
-        }
-      });
+    document.getElementById('approveBtn').addEventListener('click', () => {
+      Store.approveTherapist(t.id);
+      alert('تمت الموافقة على المعالج ونقله إلى قائمة المعتمدين');
+      window.location.href = 'therapists.html';
     });
 
     document.getElementById('rejectBtn').addEventListener('click', () => {
-      AdminUI.reasonModal({
-        title: 'رفض المعالج',
-        text: 'سيتم إرسال سبب الرفض إلى بريد المعالج الإلكتروني.',
-        placeholder: 'مثال: الشهادات المرفقة غير كافية للتحقق من الترخيص المهني.',
-        confirmLabel: 'تأكيد الرفض',
-        danger: true,
-        onConfirm: (reason) => {
-          const result = Store.rejectTherapist(t.id, source, reason);
-          if (result) {
-            if (result.email) {
-              AdminUI.sendMail({
-                to: result.email,
-                subject: 'تحديث بخصوص طلب انضمامك إلى إطمئن',
-                body: 'مرحبًا ' + result.name + '،\n\nتم رفض طلبك لعدم استكمال الشروط المطلوبة.\nسبب الرفض: ' + reason + '\n\nفريق إطمئن'
-              });
-            }
-            AdminUI.toast('tToast', 'تم رفض الطلب وإرسال السبب بالبريد الإلكتروني.');
-            setTimeout(() => { window.location.href = 'therapists.html'; }, 1200);
-          }
-        }
-      });
-    });
-
-    document.getElementById('freezeBtn').addEventListener('click', () => {
-      AdminUI.reasonModal({
-        title: 'تجميد حساب المعالج',
-        text: 'سبب التجميد إلزامي، وسيتم إرساله لبريد المعالج الإلكتروني.',
-        placeholder: 'مثال: شكوى مقدّمة من أحد المرضى بخصوص التأخر عن المواعيد.',
-        confirmLabel: 'تأكيد التجميد',
-        danger: true,
-        onConfirm: (reason) => {
-          const result = Store.freezeTherapist(t.id, reason);
-          if (result) {
-            t = result;
-            render();
-            if (t.email) {
-              AdminUI.sendMail({
-                to: t.email,
-                subject: 'تم تجميد حسابك في إطمئن',
-                body: 'مرحبًا ' + t.name + '،\n\nتم تجميد حسابك بسبب: ' + reason + '\n\nفريق إطمئن'
-              });
-            }
-            AdminUI.toast('tToast', 'تم تجميد الحساب وإرسال السبب بالبريد الإلكتروني.');
-          }
-        }
-      });
+      const reason = prompt('يرجى ذكر سبب الرفض:');
+      if (reason) {
+        Store.rejectTherapist(t.id, reason);
+        alert('تم رفض الطلب');
+        window.location.href = 'therapists.html';
+      }
     });
   })();
 </script>

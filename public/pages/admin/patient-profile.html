@@ -30,7 +30,7 @@
         </button>
         <button class="icon-btn lang-toggle-btn" type="button" aria-label="Change language"><span class="lang-toggle-label">EN</span></button>
       </div>
-      <div class="avatar" style="width:40px;height:40px;font-size:13px;">أد</div>
+      <div class="avatar" id="header-admin-avatar" style="width:40px;height:40px;font-size:13px;">--</div>
     </div>
   </div>
 </header>
@@ -42,8 +42,11 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
     </button>
     <div class="dash-user">
-      <div class="avatar">أد</div>
-      <div><b>مدير المنصة</b><span>صلاحيات كاملة</span></div>
+      <div class="avatar" id="sidebar-admin-avatar">--</div>
+      <div>
+        <b id="sidebar-admin-name">جاري التحميل...</b>
+        <span id="sidebar-admin-role">---</span>
+      </div>
     </div>
     <nav class="dash-nav">
       <a href="dashboard.html">
@@ -55,7 +58,7 @@
         <span data-i18n="sidebar.therapistApprovals">اعتماد المعالجين</span>
       </a>
       <a href="users.html" class="active">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 010 7.75"/></svg>
         <span data-i18n="sidebar.users">إدارة المستخدمين</span>
       </a>
       <a href="specialties.html">
@@ -79,150 +82,60 @@
       <span data-i18n="sidebar.menu">القائمة</span>
     </button>
     <div class="dash-head">
-      <div><h1 id="pTitle">ملف المريض</h1><p><a href="users.html">&rarr; العودة لإدارة المستخدمين</a></p></div>
-      <span class="pill" id="pStatusPill">—</span>
+      <div>
+        <a href="users.html" style="font-size:13px; color:var(--teal-700); text-decoration:none;">← العودة لجمهر المستخدمين</a>
+        <h1 id="patientName" style="margin-top:4px;">ملف المريض</h1>
+      </div>
     </div>
 
-    <div id="notFoundMsg" class="panel" style="display:none;">
-      <p>تعذّر إيجاد هذا المستخدم. ربما تم حذفه أو أن الرابط غير صحيح.</p>
-    </div>
-
-    <div id="detailsWrap">
+    <div class="grid-2">
       <div class="panel">
-        <h3>بيانات التسجيل</h3>
-        <div class="detail-grid">
-          <div class="detail-item"><span>الاسم</span><b id="fName">—</b></div>
-          <div class="detail-item"><span>البريد الإلكتروني</span><b id="fEmail">—</b></div>
-          <div class="detail-item"><span>رقم الهاتف</span><b id="fPhone">—</b></div>
-          <div class="detail-item"><span>الجامعة</span><b id="fUniversity">—</b></div>
-          <div class="detail-item"><span>تاريخ التسجيل</span><b id="fRegisteredAt">—</b></div>
-          <div class="detail-item"><span>عدد الجلسات</span><b id="fSessions">—</b></div>
-          <div class="detail-item"><span>الوضع المجهول</span><b id="fAnon">—</b></div>
-        </div>
-        <p class="status-history" id="fStatusHistory"></p>
+        <h3 style="margin-bottom:12px;">بيانات الحساب</h3>
+        <p><b>البريد الإلكتروني:</b> <span id="patientEmail">--</span></p>
+        <p><b>الجامعة:</b> <span id="patientUni">--</span></p>
+        <p><b>عدد الجلسات:</b> <span id="patientSessions">0</span></p>
+        <p><b>الوضع المجهول:</b> <span id="patientAnon">--</span></p>
       </div>
 
       <div class="panel">
-        <h3>إجراءات إدارة المريض</h3>
-        <div style="display:flex; flex-wrap:wrap; gap:10px;">
-          <button class="btn btn-primary" id="acceptBtn">قبول المريض</button>
-          <button class="btn btn-ghost" id="rejectBtn">رفض المريض</button>
+        <h3 style="margin-bottom:12px;">إدارة الحالة</h3>
+        <div class="field" style="margin-bottom:14px;">
+          <label>حالة المريض</label>
+          <select id="patientStatusSelect" style="width:100%; padding:10px; border-radius:8px; border:1px solid var(--border); background:var(--bg-card); color:var(--ink-900);">
+            <option value="pending">قيد المراجعة</option>
+            <option value="accepted">مقبول</option>
+            <option value="rejected">مرفوض</option>
+            <option value="deleted">محذوف</option>
+          </select>
         </div>
-      </div>
-
-      <div class="danger-zone">
-        <h4>منطقة الإجراءات الحساسة</h4>
-        <p>هذه العملية نهائية: سيتم تعطيل الحساب وإلغاء جلساته المرتبطة، وسيصل سبب الحذف للمريض عبر البريد الإلكتروني.</p>
-        <button class="btn btn-danger" id="deleteBtn">حذف الحساب</button>
+        <button class="btn btn-primary" id="savePatientStatusBtn" style="width:100%;">تعديل الحالة</button>
       </div>
     </div>
   </main>
 </div>
-
-<div class="toast" id="pToast"></div>
 
 <script src="../../assets/js/main.js"></script>
 <script src="../../assets/js/admin-common.js"></script>
 <script>
   (function () {
     const params = new URLSearchParams(window.location.search);
-    const userId = params.get('id');
-    let user = userId ? Store.getPlatformUser(userId) : null;
+    const id = params.get('id');
+    const users = Store.getPlatformUsers();
+    const u = users.find(x => x.id === id) || users[0];
 
-    if (!user) {
-      document.getElementById('detailsWrap').style.display = 'none';
-      document.getElementById('pStatusPill').style.display = 'none';
-      document.getElementById('notFoundMsg').style.display = 'block';
-      return;
-    }
+    if (!u) return;
 
-    function render() {
-      document.getElementById('pTitle').textContent = 'ملف ' + user.name;
-      document.getElementById('fName').textContent = user.name || '—';
-      document.getElementById('fEmail').textContent = user.email || '—';
-      document.getElementById('fPhone').textContent = user.phone || '—';
-      document.getElementById('fUniversity').textContent = user.university || '—';
-      document.getElementById('fRegisteredAt').textContent = user.registeredAt || '—';
-      document.getElementById('fSessions').textContent = String(user.sessionsCount || 0);
-      document.getElementById('fAnon').textContent = user.anonymousMode ? 'مفعّل' : 'غير مفعّل';
+    document.getElementById('patientName').textContent = u.name;
+    document.getElementById('patientEmail').textContent = u.email || 'غير محدد';
+    document.getElementById('patientUni').textContent = u.university || '—';
+    document.getElementById('patientSessions').textContent = u.sessionsCount;
+    document.getElementById('patientAnon').textContent = u.anonymousMode ? 'مفعّل' : 'غير مفعّل';
+    document.getElementById('patientStatusSelect').value = u.status;
 
-      const pill = document.getElementById('pStatusPill');
-      pill.textContent = AdminUI.patientStatusLabel[user.status] || user.status;
-      pill.className = 'pill ' + (AdminUI.patientStatusPill[user.status] || 'pending');
-
-      const messages = {
-        accepted: 'تم قبول المستخدم لاستيفائه الشروط.',
-        rejected: 'تم رفض المستخدم لعدم استكمال الشروط المطلوبة' + (user.statusReason ? ': ' + user.statusReason : '.'),
-        deleted: 'تم حذف الحساب' + (user.statusReason ? ' بسبب: ' + user.statusReason : '.'),
-        pending: 'الحساب قيد المراجعة ولم يُتخذ أي إجراء بعد.'
-      };
-      document.getElementById('fStatusHistory').textContent =
-        messages[user.status] + (user.statusAt ? ' — ' + user.statusAt : '');
-
-      document.getElementById('acceptBtn').disabled = user.status === 'accepted' || user.status === 'deleted';
-      document.getElementById('rejectBtn').disabled = user.status === 'deleted';
-      document.getElementById('deleteBtn').disabled = user.status === 'deleted';
-      if (user.status === 'deleted') document.getElementById('deleteBtn').textContent = 'تم حذف هذا الحساب';
-    }
-
-    render();
-
-    document.getElementById('acceptBtn').addEventListener('click', () => {
-      AdminUI.confirmModal({
-        title: 'قبول المريض',
-        text: 'سيتم تفعيل حساب "' + user.name + '" وتصبح حالته "مقبول".',
-        confirmLabel: 'تأكيد القبول',
-        onConfirm: () => {
-          user = Store.acceptPlatformUser(user.id);
-          render();
-          AdminUI.toast('pToast', 'تم قبول المستخدم لاستيفائه الشروط.');
-        }
-      });
-    });
-
-    document.getElementById('rejectBtn').addEventListener('click', () => {
-      AdminUI.reasonModal({
-        title: 'رفض المريض',
-        text: 'سيتم إرسال سبب الرفض إلى بريد المريض الإلكتروني.',
-        placeholder: 'مثال: لم يتم استكمال بيانات إثبات الصفة الجامعية.',
-        confirmLabel: 'تأكيد الرفض',
-        danger: true,
-        onConfirm: (reason) => {
-          user = Store.rejectPlatformUser(user.id, reason);
-          render();
-          if (user.email) {
-            AdminUI.sendMail({
-              to: user.email,
-              subject: 'تحديث حالة حسابك في إطمئن',
-              body: 'مرحبًا ' + user.name + '،\n\nتم رفض طلبك لعدم استكمال الشروط المطلوبة.\nسبب الرفض: ' + reason + '\n\nفريق إطمئن'
-            });
-          }
-          AdminUI.toast('pToast', 'تم رفض طلب المريض وإرسال السبب بالبريد الإلكتروني.');
-        }
-      });
-    });
-
-    document.getElementById('deleteBtn').addEventListener('click', () => {
-      AdminUI.reasonModal({
-        title: 'حذف حساب المريض',
-        text: 'هذا الإجراء نهائي. اكتب سبب الحذف — سيُرسل إلى بريد المريض الإلكتروني.',
-        placeholder: 'مثال: شكوى مقدّمة من أحد المعالجين بخصوص سلوك غير لائق.',
-        confirmLabel: 'تأكيد الحذف',
-        danger: true,
-        onConfirm: (reason) => {
-          Store.deletePlatformUser(user.id, reason);
-          user = Store.getPlatformUser(user.id);
-          render();
-          if (user.email) {
-            AdminUI.sendMail({
-              to: user.email,
-              subject: 'تم حذف حسابك في إطمئن',
-              body: 'مرحبًا ' + user.name + '،\n\nتم حذف حسابك على منصة إطمئن.\nالسبب: ' + reason + '\n\nفريق إطمئن'
-            });
-          }
-          AdminUI.toast('pToast', 'تم حذف الحساب وإرسال السبب بالبريد الإلكتروني.');
-        }
-      });
+    document.getElementById('savePatientStatusBtn').addEventListener('click', () => {
+      u.status = document.getElementById('patientStatusSelect').value;
+      Store.savePlatformUsers(users);
+      alert('تم تحديث حالة المريض بنجاح');
     });
   })();
 </script>

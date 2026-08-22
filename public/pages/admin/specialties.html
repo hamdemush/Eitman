@@ -30,7 +30,7 @@
         </button>
         <button class="icon-btn lang-toggle-btn" type="button" aria-label="Change language"><span class="lang-toggle-label">EN</span></button>
       </div>
-      <div class="avatar" style="width:40px;height:40px;font-size:13px;">أد</div>
+      <div class="avatar" id="header-admin-avatar" style="width:40px;height:40px;font-size:13px;">--</div>
     </div>
   </div>
 </header>
@@ -42,8 +42,11 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
     </button>
     <div class="dash-user">
-      <div class="avatar">أد</div>
-      <div><b>مدير المنصة</b><span>صلاحيات كاملة</span></div>
+      <div class="avatar" id="sidebar-admin-avatar">--</div>
+      <div>
+        <b id="sidebar-admin-name">جاري التحميل...</b>
+        <span id="sidebar-admin-role">---</span>
+      </div>
     </div>
     <nav class="dash-nav">
       <a href="dashboard.html">
@@ -55,7 +58,7 @@
         <span data-i18n="sidebar.therapistApprovals">اعتماد المعالجين</span>
       </a>
       <a href="users.html">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 010 7.75"/></svg>
         <span data-i18n="sidebar.users">إدارة المستخدمين</span>
       </a>
       <a href="specialties.html" class="active">
@@ -102,7 +105,7 @@
 
 <div class="modal-overlay" id="editModal">
   <div class="modal-box">
-    <h3>تعديل التخصص</h3>
+    <h3 id="modalTitle">تعديل التخصص</h3>
     <div class="field" style="margin-bottom:14px;">
       <label for="editNameInput">اسم التخصص</label>
       <input type="text" id="editNameInput" style="width:100%; padding:12px 14px; border-radius:12px; border:1.5px solid var(--border); font-family:inherit; font-size:14px; background:var(--bg-card); color:var(--ink-900);">
@@ -122,6 +125,10 @@
     const tbody = document.getElementById('specialtiesBody');
     const editModal = document.getElementById('editModal');
     const editNameInput = document.getElementById('editNameInput');
+    const editSaveBtn = document.getElementById('editSaveBtn');
+    const editCancelBtn = document.getElementById('editCancelBtn');
+    const addSpecialtyBtn = document.getElementById('addSpecialtyBtn');
+    const modalTitle = document.getElementById('modalTitle');
     let editingId = null;
 
     function render() {
@@ -151,63 +158,56 @@
     }
 
     tbody.addEventListener('click', (e) => {
-      const btn = e.target.closest('button[data-action]');
-      if (!btn) return;
-      const id = btn.getAttribute('data-id');
-      const action = btn.getAttribute('data-action');
-      const sp = Store.getSpecialties().find((s) => s.id === id);
-      if (!sp) return;
+      const target = e.target.closest('button');
+      if (!target) return;
+      const action = target.getAttribute('data-action');
+      const id = target.getAttribute('data-id');
 
-      if (action === 'edit') {
-        editingId = id;
-        editNameInput.value = sp.name;
-        editModal.classList.add('open');
-        setTimeout(() => editNameInput.focus(), 50);
-      } else if (action === 'delete') {
-        AdminUI.confirmModal({
-          title: 'حذف التخصص',
-          text: 'سيتم حذف تخصص "' + sp.name + '" نهائيًا من قائمة الاستبيان ونظام المطابقة. هل تريد المتابعة؟',
-          confirmLabel: 'تأكيد الحذف',
-          danger: true,
-          onConfirm: () => {
-            Store.deleteSpecialty(id);
-            render();
-            AdminUI.toast('specialtiesToast', 'تم حذف التخصص بنجاح.');
-          }
-        });
-      } else if (action === 'activate') {
-        Store.toggleSpecialtyActive(id);
+      if (action === 'activate') {
+        Store.updateSpecialty(id, { active: true });
         render();
-        AdminUI.toast('specialtiesToast', 'تم تفعيل التخصص، وأصبح متاحًا في الاستبيان الأولي.');
+      } else if (action === 'edit') {
+        const specialties = Store.getSpecialties();
+        const item = specialties.find(s => s.id === id);
+        if (item) {
+          editingId = id;
+          modalTitle.textContent = 'تعديل التخصص';
+          editNameInput.value = item.name;
+          editModal.classList.add('active');
+        }
+      } else if (action === 'delete') {
+        if (confirm('هل أنت تأكد من حذف هذا التخصص؟')) {
+          Store.deleteSpecialty(id);
+          render();
+        }
       }
     });
 
-    document.getElementById('editCancelBtn').addEventListener('click', () => editModal.classList.remove('open'));
-    editModal.addEventListener('click', (e) => { if (e.target === editModal) editModal.classList.remove('open'); });
-    document.getElementById('editSaveBtn').addEventListener('click', () => {
-      const newName = editNameInput.value.trim();
-      if (!newName || !editingId) return;
-      Store.updateSpecialtyName(editingId, newName);
-      editModal.classList.remove('open');
+    addSpecialtyBtn.addEventListener('click', () => {
+      editingId = null;
+      modalTitle.textContent = 'إضافة تخصص جديد';
+      editNameInput.value = '';
+      editModal.classList.add('active');
+    });
+
+    editCancelBtn.addEventListener('click', () => {
+      editModal.classList.remove('active');
+    });
+
+    editSaveBtn.addEventListener('click', () => {
+      const name = editNameInput.value.trim();
+      if (!name) return;
+
+      if (editingId) {
+        Store.updateSpecialty(editingId, { name });
+      } else {
+        Store.addSpecialty({ name, therapistsCount: 0, casesCount: 0, active: true });
+      }
+
+      editModal.classList.remove('active');
       render();
-      AdminUI.toast('specialtiesToast', 'تم تعديل التخصص بنجاح.');
     });
 
-    document.getElementById('addSpecialtyBtn').addEventListener('click', () => {
-      AdminUI.reasonModal({
-        title: 'إضافة تخصص جديد',
-        text: 'أدخل اسم التخصص — سيُضاف بحالة "غير مفعّل" حتى تفعيله.',
-        placeholder: 'مثال: صعوبات التعلّم',
-        confirmLabel: 'إضافة',
-        onConfirm: (name) => {
-          Store.addSpecialty(name);
-          render();
-          AdminUI.toast('specialtiesToast', 'تمت إضافة التخصص، وسيظهر بحالة "غير مفعّل" حتى تفعيله.');
-        }
-      });
-    });
-
-    AdminUI.initActionMenus(tbody);
     render();
   })();
 </script>

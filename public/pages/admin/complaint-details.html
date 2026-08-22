@@ -30,7 +30,7 @@
         </button>
         <button class="icon-btn lang-toggle-btn" type="button" aria-label="Change language"><span class="lang-toggle-label">EN</span></button>
       </div>
-      <div class="avatar" style="width:40px;height:40px;font-size:13px;">أد</div>
+      <div class="avatar" id="header-admin-avatar" style="width:40px;height:40px;font-size:13px;">--</div>
     </div>
   </div>
 </header>
@@ -42,8 +42,11 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
     </button>
     <div class="dash-user">
-      <div class="avatar">أد</div>
-      <div><b>مدير المنصة</b><span>صلاحيات كاملة</span></div>
+      <div class="avatar" id="sidebar-admin-avatar">--</div>
+      <div>
+        <b id="sidebar-admin-name">جاري التحميل...</b>
+        <span id="sidebar-admin-role">---</span>
+      </div>
     </div>
     <nav class="dash-nav">
       <a href="dashboard.html">
@@ -55,7 +58,7 @@
         <span data-i18n="sidebar.therapistApprovals">اعتماد المعالجين</span>
       </a>
       <a href="users.html">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 010 7.75"/></svg>
         <span data-i18n="sidebar.users">إدارة المستخدمين</span>
       </a>
       <a href="specialties.html">
@@ -79,211 +82,65 @@
       <span data-i18n="sidebar.menu">القائمة</span>
     </button>
     <div class="dash-head">
-      <div><h1 id="cTitle">تفاصيل الشكوى</h1><p><a href="complaints.html">&rarr; العودة لكل الشكاوى</a></p></div>
-      <span class="pill" id="cStatusPill">—</span>
+      <div>
+        <a href="complaints.html" style="font-size:13px; color:var(--teal-700); text-decoration:none;">← العودة للبلاغات</a>
+        <h1 id="complaintTitle" style="margin-top:4px;">تفاصيل الشكوى</h1>
+      </div>
+      <div id="statusBadgeWrap"></div>
     </div>
 
-    <div id="notFoundMsg" class="panel" style="display:none;">
-      <p>تعذّر إيجاد هذه الشكوى. ربما تم حذفها أو أن الرابط غير صحيح.</p>
-    </div>
-
-    <div id="detailsWrap">
+    <div class="grid-2">
       <div class="panel">
-        <h3>وصف الشكوى</h3>
-        <p id="cDescription" style="font-size:14.5px; color:var(--ink-700); line-height:1.9;"></p>
-        <p style="font-size:12.5px; color:var(--ink-500); margin-top:10px;" id="cDateLabel"></p>
+        <h3 style="margin-bottom:12px;">معلومات البلاغ</h3>
+        <p><b>المُشتكي:</b> <span id="complainant">--</span></p>
+        <p><b>المشتكى عليه:</b> <span id="accused">--</span></p>
+        <p><b>التاريخ:</b> <span id="dateLabel">--</span></p>
+        <hr style="margin:16px 0; border:0; border-top:1px solid var(--border);">
+        <p><b>وصف المشكلة:</b></p>
+        <p id="descriptionText" style="margin-top:8px; line-height:1.6; color:var(--ink-700);"></p>
       </div>
 
       <div class="panel">
-        <h3>الأطراف المعنية</h3>
-        <div class="field-row">
-          <div class="complaint-party" style="flex:1;">
-            <div class="avatar" id="complainantAvatar">؟</div>
-            <div>
-              <b id="complainantName">—</b>
-              <span id="complainantType">مقدّم الشكوى</span>
-            </div>
-          </div>
-          <div class="complaint-party" style="flex:1;">
-            <div class="avatar" id="accusedAvatar">؟</div>
-            <div>
-              <b id="accusedName">—</b>
-              <span id="accusedType">المشتكى عليه</span>
-            </div>
-          </div>
+        <h3 style="margin-bottom:12px;">تحديث حالة البلاغ</h3>
+        <div class="field" style="margin-bottom:14px;">
+          <label>الحالة الحالية</label>
+          <select id="statusSelect" style="width:100%; padding:10px; border-radius:8px; border:1px solid var(--border); background:var(--bg-card); color:var(--ink-900);">
+            <option value="open">مفتوحة</option>
+            <option value="in_progress">قيد المتابعة</option>
+            <option value="resolved">تم الحل</option>
+          </select>
         </div>
-      </div>
-
-      <div class="panel">
-        <h3>إجراءات الإدارة</h3>
-        <div style="display:flex; flex-wrap:wrap; gap:10px;">
-          <button class="btn btn-ghost" id="resolveBtn">تعليم الشكوى "تم الحل"</button>
-          <button class="btn btn-ghost" id="emailSupportBtn" type="button">إرسال إلى الدعم الفني عبر البريد</button>
-        </div>
-        <p class="status-history" id="resolvedMeta"></p>
-        <p class="status-history" id="emailMeta"></p>
-      </div>
-
-      <div class="danger-zone">
-        <h4>منطقة الإجراءات الحساسة</h4>
-        <p>هذه الإجراءات نهائية ولا يمكن التراجع عنها. تُستخدم فقط بعد التحقق من صحة الشكوى.</p>
-        <div style="display:flex; flex-wrap:wrap; gap:10px;">
-          <button class="btn btn-danger" id="deleteAccusedBtn">حذف حساب المشتكى عليه</button>
-          <button class="btn btn-danger" id="deleteTherapistBtn">حذف حساب الطبيب</button>
-        </div>
+        <button class="btn btn-primary" id="saveStatusBtn" style="width:100%;">حفظ التعديل</button>
       </div>
     </div>
   </main>
 </div>
 
-<div class="modal-overlay" id="confirmModal">
-  <div class="modal-box">
-    <h3 id="modalTitle">تأكيد الإجراء</h3>
-    <p id="modalText">هل أنت متأكد من رغبتك بإتمام هذا الإجراء؟ لا يمكن التراجع عنه.</p>
-    <div class="modal-actions">
-      <button class="btn btn-ghost" id="modalCancelBtn">إلغاء</button>
-      <button class="btn btn-danger" id="modalConfirmBtn">تأكيد الحذف</button>
-    </div>
-  </div>
-</div>
-<div class="toast" id="detailsToast"></div>
+<div class="toast" id="complaintToast"></div>
 
 <script src="../../assets/js/main.js"></script>
 <script src="../../assets/js/admin-common.js"></script>
 <script>
   (function () {
-    // TODO(back-end team): no official support inbox exists yet — replace
-    // this placeholder once the real address is created (see chat request).
-    const SUPPORT_EMAIL = 'support-temp@etmaen.app';
-
     const params = new URLSearchParams(window.location.search);
-    const complaintId = params.get('id');
-    const statusLabels = { open: 'مفتوحة', resolved: 'تم الحل', in_progress: 'قيد المتابعة' };
-    const statusPillClass = { open: 'open', resolved: 'resolved', in_progress: 'open' };
-    const typeLabels = { patient: 'مريض', therapist: 'معالج', system: 'النظام' };
+    const id = params.get('id');
+    const complaints = Store.getComplaints();
+    const item = complaints.find(c => c.id === id) || complaints[0];
 
-    let complaint = complaintId ? Store.getComplaint(complaintId) : null;
+    if (!item) return;
 
-    if (!complaint) {
-      document.getElementById('detailsWrap').style.display = 'none';
-      document.getElementById('notFoundMsg').style.display = 'block';
-      return;
-    }
+    document.getElementById('complaintTitle').textContent = item.title;
+    document.getElementById('complainant').textContent = item.complainantName;
+    document.getElementById('accused').textContent = item.accusedName;
+    document.getElementById('dateLabel').textContent = item.dateLabel;
+    document.getElementById('descriptionText').textContent = item.description || 'لا يوجد وصف تفصيلي للمشكلة.';
+    document.getElementById('statusSelect').value = item.status;
 
-    function showToast(text) {
-      const toast = document.getElementById('detailsToast');
-      toast.textContent = text;
-      toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 2400);
-    }
-
-    function render() {
-      document.getElementById('cTitle').textContent = complaint.title;
-      document.getElementById('cDescription').textContent = complaint.description;
-      document.getElementById('cDateLabel').textContent = 'تاريخ البلاغ: ' + complaint.dateLabel;
-
-      const pill = document.getElementById('cStatusPill');
-      pill.textContent = statusLabels[complaint.status];
-      pill.className = 'pill ' + statusPillClass[complaint.status];
-
-      document.getElementById('complainantAvatar').textContent = complaint.complainantName ? complaint.complainantName.slice(0, 2) : '؟';
-      document.getElementById('complainantName').textContent = complaint.complainantName;
-      document.getElementById('complainantType').textContent = 'مقدّم الشكوى — ' + typeLabels[complaint.complainantType];
-
-      document.getElementById('accusedAvatar').textContent = complaint.accusedName && complaint.accusedName !== '—' ? complaint.accusedName.slice(0, 2) : '؟';
-      document.getElementById('accusedName').textContent = complaint.accusedName;
-      document.getElementById('accusedType').textContent = 'المشتكى عليه — ' + typeLabels[complaint.accusedType];
-
-      const resolveBtn = document.getElementById('resolveBtn');
-      resolveBtn.disabled = complaint.status === 'resolved';
-      resolveBtn.textContent = complaint.status === 'resolved' ? 'تم حل الشكوى بالفعل' : 'تعليم الشكوى "تم الحل"';
-
-      const deleteAccusedBtn = document.getElementById('deleteAccusedBtn');
-      const deleteTherapistBtn = document.getElementById('deleteTherapistBtn');
-      deleteAccusedBtn.disabled = !complaint.accusedId;
-      deleteAccusedBtn.textContent = complaint.accusedId ? 'حذف حساب المشتكى عليه (' + complaint.accusedName + ')' : 'لا يوجد حساب مرتبط بالمشتكى عليه';
-      // "delete the doctor's account" only makes sense/shows up when the
-      // accused party in this complaint IS a therapist.
-      if (complaint.accusedType === 'therapist' && complaint.accusedId) {
-        deleteTherapistBtn.style.display = 'inline-flex';
-        deleteTherapistBtn.textContent = 'حذف حساب الطبيب (' + complaint.accusedName + ')';
-      } else {
-        deleteTherapistBtn.style.display = 'none';
-      }
-
-      document.getElementById('resolvedMeta').textContent = complaint.status === 'resolved'
-        ? 'تم حل هذه الشكوى بواسطة إدارة النظام — ' + (complaint.resolvedBy || 'مدير المنصة') + (complaint.resolvedAt ? ' — ' + complaint.resolvedAt : '')
-        : '';
-
-      const emailBtn = document.getElementById('emailSupportBtn');
-      if (complaint.supportEmailSentAt) {
-        emailBtn.classList.add('btn-support-sent');
-        emailBtn.textContent = '✓ تم الإرسال إلى الدعم الفني';
-        document.getElementById('emailMeta').textContent = 'تم إرسال الشكوى إلى الدعم الفني بنجاح — ' + complaint.supportEmailSentAt;
-      } else {
-        emailBtn.classList.remove('btn-support-sent');
-        emailBtn.textContent = 'إرسال إلى الدعم الفني عبر البريد';
-        document.getElementById('emailMeta').textContent = '';
-      }
-    }
-
-    render();
-
-    document.getElementById('resolveBtn').addEventListener('click', () => {
-      complaint = Store.resolveComplaint(complaint.id, 'resolved');
-      render();
-      showToast('تم حل هذه الشكوى بواسطة إدارة النظام.');
-    });
-
-    document.getElementById('emailSupportBtn').addEventListener('click', () => {
-      const subject = 'تصعيد شكوى #' + complaint.id + ' — ' + complaint.title;
-      const body =
-        'تفاصيل الشكوى:\n' +
-        '- العنوان: ' + complaint.title + '\n' +
-        '- مقدّم الشكوى: ' + complaint.complainantName + ' (' + typeLabels[complaint.complainantType] + ')\n' +
-        '- المشتكى عليه: ' + complaint.accusedName + ' (' + typeLabels[complaint.accusedType] + ')\n' +
-        '- التاريخ: ' + complaint.dateLabel + '\n' +
-        '- الوصف: ' + complaint.description;
-
-      const sent = AdminUI.sendMail({ to: SUPPORT_EMAIL, subject, body });
-      if (sent) {
-        complaint = Store.markComplaintEmailedToSupport(complaint.id);
-        render();
-        showToast('تم إرسال الشكوى إلى الدعم الفني بنجاح.');
-      } else {
-        showToast('تعذّر إرسال الشكوى إلى الدعم الفني. تأكد من وجود برنامج بريد افتراضي على جهازك ثم أعد المحاولة.');
-      }
-    });
-
-    // ---- delete-account confirmation modal (shared by both danger buttons) ----
-    const modal = document.getElementById('confirmModal');
-    const modalText = document.getElementById('modalText');
-    const modalConfirmBtn = document.getElementById('modalConfirmBtn');
-    let pendingDelete = null;
-
-    function openModal(type, id, label) {
-      pendingDelete = { type, id };
-      modalText.textContent = 'سيتم حذف حساب "' + label + '" نهائيًا وإلغاء كل جلساته/محادثاته المرتبطة. هل تريد المتابعة؟';
-      modal.classList.add('open');
-    }
-    document.getElementById('modalCancelBtn').addEventListener('click', () => modal.classList.remove('open'));
-    modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('open'); });
-
-    modalConfirmBtn.addEventListener('click', () => {
-      if (!pendingDelete) return;
-      Store.deleteUser(pendingDelete.type, pendingDelete.id, 'شكوى مقدّمة من ' + complaint.complainantName + ': ' + complaint.title);
-      modal.classList.remove('open');
-      showToast('تم حذف الحساب بنجاح.');
-      render();
-    });
-
-    document.getElementById('deleteAccusedBtn').addEventListener('click', () => {
-      if (!complaint.accusedId) return;
-      openModal(complaint.accusedType, complaint.accusedId, complaint.accusedName);
-    });
-    document.getElementById('deleteTherapistBtn').addEventListener('click', () => {
-      if (complaint.accusedType !== 'therapist' || !complaint.accusedId) return;
-      openModal('therapist', complaint.accusedId, complaint.accusedName);
+    document.getElementById('saveStatusBtn').addEventListener('click', () => {
+      const newStatus = document.getElementById('statusSelect').value;
+      item.status = newStatus;
+      Store.saveComplaints(complaints);
+      alert('تم تحديث حالة البلاغ بنجاح');
     });
   })();
 </script>

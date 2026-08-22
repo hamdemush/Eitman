@@ -12,8 +12,6 @@
 const AdminUI = (function () {
 
   /* ------------------------------- toast ------------------------------- */
-  // Reuses a single <div class="toast"> that must exist on the page (id
-  // configurable so pages that already had one keep working unchanged).
   function toast(elId, text) {
     const el = document.getElementById(elId);
     if (!el) return;
@@ -24,8 +22,6 @@ const AdminUI = (function () {
   }
 
   /* ------------------------- generic confirm modal ------------------------ */
-  // <div class="modal-overlay" id="..."> with h3/p/2 buttons, built at runtime
-  // so pages don't need bespoke markup for every single confirmation dialog.
   function ensureModalHost() {
     let host = document.getElementById('adminModalHost');
     if (host) return host;
@@ -35,9 +31,6 @@ const AdminUI = (function () {
     return host;
   }
 
-  /**
-   * Confirm-only modal (no text input). Resolves nothing — takes onConfirm.
-   */
   function confirmModal({ title, text, confirmLabel, danger, onConfirm }) {
     const host = ensureModalHost();
     host.innerHTML =
@@ -64,12 +57,6 @@ const AdminUI = (function () {
     });
   }
 
-  /**
-   * Modal with a required textarea (rejection / deletion / freeze reasons).
-   * onConfirm receives the trimmed reason string; the confirm button stays
-   * disabled until at least a few characters are entered so an action can
-   * never be completed silently without a reason (per admin spec §12).
-   */
   function reasonModal({ title, text, placeholder, confirmLabel, danger, onConfirm }) {
     const host = ensureModalHost();
     host.innerHTML =
@@ -107,8 +94,6 @@ const AdminUI = (function () {
   }
 
   /* ------------------------------ dropdown menu ------------------------------ */
-  // Small "..." action menu used by admin/specialties.html (تعديل / حذف).
-  // Closes on outside click / Escape; only one open at a time.
   function initActionMenus(root) {
     (root || document).addEventListener('click', (e) => {
       const trigger = e.target.closest('[data-menu-trigger]');
@@ -127,11 +112,6 @@ const AdminUI = (function () {
   }
 
   /* --------------------------------- email --------------------------------- */
-  // The project has no back-end mail service (see README §5) — the
-  // established pattern (already used in complaint-details.html) is a
-  // pre-filled `mailto:` link opened via the OS/browser mail handler. We
-  // centralize it here instead of re-writing it per page. Returns true/false
-  // so callers only update status/UI on an actual success.
   function sendMail({ to, subject, body }) {
     try {
       const href = 'mailto:' + to +
@@ -149,6 +129,27 @@ const AdminUI = (function () {
     }
   }
 
+  /* ------------------------------ admin profile setup ------------------------------ */
+  function setupAdminProfile() {
+    if (typeof Store === 'undefined') return;
+    const admin = Store.getAdminProfile();
+    if (!admin) return;
+
+    const initial = (admin.name || 'أ').charAt(0).toUpperCase();
+
+    const headAvatar = document.getElementById('header-admin-avatar');
+    if (headAvatar) headAvatar.textContent = initial;
+
+    const sideAvatar = document.getElementById('sidebar-admin-avatar');
+    if (sideAvatar) sideAvatar.textContent = initial;
+
+    const sideName = document.getElementById('sidebar-admin-name');
+    if (sideName) sideName.textContent = admin.name || 'مدير النظام';
+
+    const sideRole = document.getElementById('sidebar-admin-role');
+    if (sideRole) sideRole.textContent = admin.role || 'مسؤول النظام';
+  }
+
   /* ------------------------------ status labels ------------------------------ */
   const patientStatusLabel = { pending: 'قيد المراجعة', accepted: 'مقبول', rejected: 'مرفوض', deleted: 'محذوف' };
   const patientStatusPill  = { pending: 'pending', accepted: 'approved', rejected: 'rejected', deleted: 'rejected' };
@@ -161,8 +162,11 @@ const AdminUI = (function () {
     }[c]));
   }
 
+  // Auto-run profile setup when loaded
+  document.addEventListener('DOMContentLoaded', setupAdminProfile);
+
   return {
-    toast, confirmModal, reasonModal, initActionMenus, sendMail,
+    toast, confirmModal, reasonModal, initActionMenus, sendMail, setupAdminProfile,
     patientStatusLabel, patientStatusPill, therapistStatusLabel, therapistStatusPill,
     escapeHtml
   };
