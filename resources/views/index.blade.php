@@ -27,19 +27,19 @@
      ========================================================= -->
 <header class="site-header">
   <div class="container">
-    <a href="index.html" class="logo"><img src="assets/images/logo-icon.png" alt="إطمئن" class="logo-mark"> إطمئن</a>
+    <a href="/" class="logo"><img src="assets/images/logo-icon.png" alt="إطمئن" class="logo-mark"> إطمئن</a>
 
     <nav class="main-nav">
-      <a href="index.html" class="active" data-i18n="nav.home">الرئيسية</a>
-      <a href="pages/specialists.html" data-i18n="nav.specialists">ابحث عن معالج</a>
-      <a href="pages/articles.html" data-i18n="nav.articles">المقالات</a>
-      <a href="pages/about.html" data-i18n="nav.about">معلومات عنا</a>
-      <a href="pages/emergency.html" data-i18n="nav.emergency">حالات الطوارئ</a>
+      <a href="/" class="active" data-i18n="nav.home">الرئيسية</a>
+      <a href="/specialists" data-i18n="nav.specialists">ابحث عن معالج</a>
+      <a href="/articles" data-i18n="nav.articles">المقالات</a>
+      <a href="/about" data-i18n="nav.about">معلومات عنا</a>
+      <a href="/emergency" data-i18n="nav.emergency">حالات الطوارئ</a>
     </nav>
 
     <div class="header-actions">
-      <a href="pages/login.html" class="link-muted" data-i18n="nav.login">تسجيل الدخول</a>
-      <a href="pages/register.html" class="btn btn-primary btn-sm" data-i18n="nav.start">ابدأ الآن</a>
+      <a href="/login" class="link-muted" data-i18n="nav.login">تسجيل الدخول</a>
+      <a href="/register" class="btn btn-primary btn-sm" data-i18n="nav.start">ابدأ الآن</a>
 
       <div class="toggle-group">
         <button class="icon-btn theme-toggle-btn" type="button" aria-label="تبديل الوضع الليلي/النهاري">
