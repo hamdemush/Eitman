@@ -1,108 +1,264 @@
-@extends('layouts.app')
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>إنشاء حساب | إطمئن</title>
+  <link rel="icon" type="image/png" href="../assets/images/favicon.png">
 
-@section('title', 'إنشاء حساب جديد | إطمئن')
+  <link rel="stylesheet" href="../assets/css/variables.css">
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
 
-@section('content')
-<section class="section" style="min-height:calc(100vh - 82px); display:flex; align-items:center;">
-  <div class="container" style="max-width:480px;">
-    <div class="question-card">
-      <h1 style="font-size:24px; margin-bottom:10px;" data-i18n="register.title">إنشاء حساب جديد</h1>
-      <p style="margin-bottom:26px;" data-i18n="register.subtitle">انضم إلى منصة إطمئن للحصول على الدعم النفسي بأمان وسرية.</p>
+  <script src="../assets/js/theme-switcher.js"></script>
+  <script src="../assets/js/translations.js"></script>
+  <script src="../assets/js/i18n.js"></script>
+  <script src="../assets/js/store.js"></script>
+</head>
+<body>
 
-      <div id="errorMessage" style="display:none; color:var(--brand-danger); background:#ffebee; padding:10px; border-radius:8px; margin-bottom:15px; font-size:14px; text-align:center;"></div>
+<header class="site-header">
+  <div class="container">
+    <a href="../index.html" class="logo"><img src="../assets/images/logo-icon.png" alt="إطمئن" class="logo-mark"> إطمئن</a>
+    <nav class="main-nav">
+      <a href="../index.html" data-i18n="nav.home">الرئيسية</a>
+      <a href="specialists.html" data-i18n="nav.specialists">ابحث عن معالج</a>
+      <a href="articles.html" data-i18n="nav.articles">المقالات</a>
+      <a href="about.html" data-i18n="nav.about">معلومات عنا</a>
+      <a href="emergency.html" data-i18n="nav.emergency">حالات الطوارئ</a>
+    </nav>
+    <div class="header-actions">
+      <a href="login.html" class="link-muted" data-i18n="nav.login">تسجيل الدخول</a>
+      <div class="toggle-group">
+        <button class="icon-btn theme-toggle-btn" type="button" aria-label="تبديل الوضع الليلي/النهاري">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1111.2 3 7 7 0 0021 12.8z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        </button>
+        <button class="icon-btn lang-toggle-btn" type="button" aria-label="Change language">
+          <span class="lang-toggle-label">EN</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
 
+<div class="auth-wrap">
+
+  <div class="auth-side" style="background-image: linear-gradient(160deg, rgba(15,105,95,.87), rgba(10,38,36,.92)), url('../assets/images/abstract-waves-bg.png'); background-size: cover; background-position: center;">
+    <span class="badge" style="background:rgba(255,255,255,.12); color:#fff; border-color:rgba(255,255,255,.2);">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a5 5 0 00-5 5v1.1A4 4 0 003 12a4 4 0 002 3.46V17a3 3 0 003 3h1"/><path d="M12 2a5 5 0 015 5v1.1A4 4 0 0121 12a4 4 0 01-2 3.46V17a3 3 0 01-3 3h-1"/></svg>
+      خطوتك الأولى نحو الاطمئنان
+    </span>
+    <h2>انضم إلى آلاف الأشخاص الذين اختاروا العناية بصحتهم النفسية.</h2>
+    <p>حسابك مجاني، جلستك الأولى مجانية، وخصوصيتك مضمونة من اللحظة الأولى.</p>
+    <div class="auth-badges">
+      <div class="auth-badge">
+        <div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a5 5 0 00-5 5v1.1A4 4 0 003 12a4 4 0 002 3.46V17a3 3 0 003 3h1"/><path d="M12 2a5 5 0 015 5v1.1A4 4 0 0121 12a4 4 0 01-2 3.46V17a3 3 0 01-3 3h-1"/></svg></div>
+        <div><b data-i18n="home.matchingTitle">مطابقة ذكية</b><span>نرشح لك المعالج الأنسب بعد استبيان قصير</span></div>
+      </div>
+      <div class="auth-badge">
+        <div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.5 8.5 0 01-12.3 7.6L3 20l1-5.6A8.5 8.5 0 1121 11.5z"/></svg></div>
+        <div><b>الجلسة الأولى مجاناً</b><span>تعرّف على معالجك دون أي التزام</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="auth-form-side">
+    <div class="auth-card">
+      <h1 id="registerTitle" data-i18n="register.title">إنشاء حساب مريض</h1>
+      <p id="registerSubtitle" data-i18n="register.subtitle">املأ بياناتك، ثم أجب على استبيان قصير لنرشّح لك المعالج المناسب.</p>
+
+      <div class="role-tabs" role="tablist">
+        <div class="role-tab selected" id="roleTabPatient" data-i18n="register.rolePatient">مريض</div>
+        <div class="role-tab" id="roleTabTherapist" data-i18n="register.roleTherapist">معالج</div>
+      </div>
+
+      <!-- NOTE: front-end mockup only. For patients, submitting goes to the
+           e-mail verification step then the assessment questionnaire. For
+           therapists, the certificates/experience entered below are saved
+           via Store.registerTherapist() so they immediately appear in the
+           doctor dashboard (pages/doctor/profile.html) — a real submit
+           handler will call the sign-up API instead. -->
       <form id="registerForm">
-        @csrf
-        <div class="field">
-          <label for="name" data-i18n="register.nameLabel">الاسم الكامل (أو المستعار)</label>
-          <input type="text" id="name" name="name" placeholder="أدخل اسمك" required autofocus>
+        <div class="field-row">
+          <div class="field">
+            <label for="fname" data-i18n="register.firstName">الاسم الأول</label>
+            <input type="text" id="fname" name="fname" placeholder="مثال: سارة" required>
+          </div>
+          <div class="field">
+            <label for="lname" data-i18n="register.lastName">اسم العائلة</label>
+            <input type="text" id="lname" name="lname" placeholder="مثال: أحمد" required>
+          </div>
         </div>
-
         <div class="field">
-          <label for="email" data-i18n="register.emailLabel">البريد الإلكتروني الجامعي</label>
+          <label for="email" data-i18n="login.emailLabel">البريد الإلكتروني </label>
           <input type="email" id="email" name="email" placeholder="name@university.edu" required>
         </div>
 
-        <div class="field">
-          <label for="role" data-i18n="register.roleLabel">نوع الحساب</label>
-          <select id="role" name="role" required style="width:100%; padding:10px; border-radius:8px; border:1px solid var(--border-color);">
-            <option value="patient">طالب / مريض</option>
-            <option value="psychologist">معالج نفسي / أخصائي</option>
-          </select>
+        <!-- Therapist-only fields: specialty, years of experience, bio, and
+             the certificates/experience-documents upload section requested. -->
+        <div class="role-only" id="therapistFields">
+          <div class="field-row">
+            <div class="field">
+              <label for="specialty" data-i18n="register.specialty">التخصص الدقيق</label>
+              <input type="text" id="specialty" name="specialty" placeholder="مثال: علاج سلوكي معرفي (CBT)">
+            </div>
+            <div class="field">
+              <label for="expYears" data-i18n="register.expYears">سنوات الخبرة</label>
+              <input type="number" id="expYears" name="expYears" min="0" placeholder="مثال: 4">
+            </div>
+          </div>
+          <div class="field">
+            <label for="bio" data-i18n="register.bio">نبذة تعريفية مختصرة</label>
+            <textarea id="bio" name="bio" rows="3" style="width:100%; padding:13px 16px; border-radius:12px; border:1.5px solid var(--border); font-family:inherit; font-size:14px; background:var(--bg-card); color:var(--ink-900);" placeholder="اكتب نبذة عن خبرتك ومجال تخصصك"></textarea>
+          </div>
+          <div class="field">
+            <label data-i18n="register.certificates">الشهادات والخبرات (يمكن إرفاق أكثر من ملف)</label>
+            <label class="upload-box" for="certificateInput">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin:0 auto 8px;"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><path d="M17 8l-5-5-5 5"/><path d="M12 3v12"/></svg>
+              <div data-i18n="register.uploadHint">اضغط هنا لإرفاق شهاداتك (PDF أو صورة) أو أي مستند يثبت خبرتك</div>
+              <input type="file" id="certificateInput" multiple accept=".pdf,.jpg,.jpeg,.png">
+            </label>
+            <div class="upload-file-list" id="uploadFileList"></div>
+          </div>
         </div>
 
-        <div class="field">
-          <label for="password" data-i18n="register.passwordLabel">كلمة المرور</label>
-          <input type="password" id="password" name="password" placeholder="••••••••" required minlength="8">
+        <div class="field-row">
+          <div class="field">
+            <label for="password" data-i18n="login.passwordLabel">كلمة المرور</label>
+            <input type="password" id="password" name="password" placeholder="8 أحرف على الأقل" required>
+          </div>
+          <div class="field">
+            <label for="password2" data-i18n="register.confirmPassword">تأكيد كلمة المرور</label>
+            <input type="password" id="password2" name="password2" placeholder="أعد كتابة كلمة المرور" required>
+          </div>
         </div>
 
-        <div class="field">
-          <label for="password_confirmation" data-i18n="register.passwordConfirmLabel">تأكيد كلمة المرور</label>
-          <input type="password" id="password_confirmation" name="password_confirmation" placeholder="••••••••" required minlength="8">
+        <div class="anon-toggle">
+          <div><b data-i18n="register.anonTitle">تفعيل وضع الاستخدام المجهول</b><span data-i18n="register.anonDesc">استخدم اسمًا مستعارًا أثناء جلساتك</span></div>
+          <label class="switch"><input type="checkbox" class="anon-checkbox"><span class="slider"></span></label>
         </div>
 
-        <button type="submit" id="submitBtn" class="btn btn-primary btn-block" data-i18n="register.submit">إنشاء الحساب</button>
+        <label class="checkbox-row">
+          <input type="checkbox" required style="accent-color:#1B5850;">
+          <span data-i18n="register.agree">أوافق على</span>
+          <a href="terms.html" style="color:var(--teal-700); font-weight:800;" data-i18n="register.terms">شروط الخدمة</a>
+          <span data-i18n="register.and">و</span>
+          <a href="privacy.html" style="color:var(--teal-700); font-weight:800;" data-i18n="register.privacy">سياسة الخصوصية</a>
+        </label>
+
+        <button type="submit" class="btn btn-primary btn-block" data-i18n="register.submit">إنشاء الحساب ومتابعة الاستبيان</button>
       </form>
 
-      <p class="form-foot" style="margin-top:20px;">
-        لديك حساب بالفعل؟ <a href="{{ route('login') }}" data-i18n="register.loginLink">تسجيل الدخول</a>
-      </p>
+      <p class="form-foot"><span data-i18n="register.haveAccount">لديك حساب بالفعل؟</span> <a href="login.html" data-i18n="nav.login">تسجيل الدخول</a></p>
     </div>
   </div>
-</section>
 
+</div>
+<footer class="site-footer">
+  <div class="container footer-row">
+  
+    <div class="footer-links">
+      <a href="privacy.html" data-i18n="footer.privacy">سياسة الخصوصية</a>
+      <a href="terms.html" data-i18n="footer.terms">شروط الخدمة</a>
+      <a href="emergency.html" data-i18n="footer.support">تواصل مع الدعم</a>
+      <a href="#" data-i18n="footer.careers" title="قريبًا" onclick="event.preventDefault();">الوظائف</a>
+    </div>
+    <div class="footer-brand">
+      <b>Etma'en | إطمئن</b><br>
+      <span data-i18n="footer.rights">© 2024 إطمئن. ملاذك الآمن.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/js/main.js"></script>
 <script>
-document.getElementById('registerForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    
-    const submitBtn = document.getElementById('submitBtn');
-    const errorDiv = document.getElementById('errorMessage');
-    
-    errorDiv.style.display = 'none';
-    submitBtn.disabled = true;
-    submitBtn.innerText = 'جاري إنشاء الحساب...';
+  (function () {
+    const patientTab = document.getElementById('roleTabPatient');
+    const therapistTab = document.getElementById('roleTabTherapist');
+    const therapistFields = document.getElementById('therapistFields');
+    const title = document.getElementById('registerTitle');
+    const subtitle = document.getElementById('registerSubtitle');
+    const form = document.getElementById('registerForm');
+    const certInput = document.getElementById('certificateInput');
+    const fileListEl = document.getElementById('uploadFileList');
+    let role = 'patient';
+    let certificateFiles = [];
 
-    const payload = {
-        name: document.getElementById('name').value,
-        email: document.getElementById('email').value,
-        role: document.getElementById('role').value,
-        password: document.getElementById('password').value,
-        password_confirmation: document.getElementById('password_confirmation').value,
-    };
-
-    try {
-        const response = await fetch('/api/register', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            body: JSON.stringify(payload)
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-            if (data.token) {
-                localStorage.setItem('auth_token', data.token);
-            }
-            window.location.href = "{{ route('verification.notice') }}";
-        } else {
-            let msg = data.message || 'حدث خطأ أثناء إنشاء الحساب.';
-            if (data.errors) {
-                msg = Object.values(data.errors).flat().join('<br>');
-            }
-            errorDiv.innerHTML = msg;
-            errorDiv.style.display = 'block';
-        }
-    } catch (err) {
-        errorDiv.innerText = 'حدث خطأ في الاتصال بالسيرفر. حاول مرة أخرى.';
-        errorDiv.style.display = 'block';
-    } finally {
-        submitBtn.disabled = false;
-        submitBtn.innerText = 'إنشاء الحساب';
+    function setRole(newRole) {
+      role = newRole;
+      const isTherapist = role === 'therapist';
+      patientTab.classList.toggle('selected', !isTherapist);
+      therapistTab.classList.toggle('selected', isTherapist);
+      therapistFields.classList.toggle('active', isTherapist);
+      title.textContent = isTherapist ? 'إنشاء حساب معالج' : 'إنشاء حساب مريض';
+      subtitle.textContent = isTherapist
+        ? 'أدخل بياناتك المهنية وأرفق شهاداتك وخبراتك ليراجعها فريق الإدارة قبل التفعيل.'
+        : 'املأ بياناتك، ثم أجب على استبيان قصير لنرشّح لك المعالج المناسب.';
+      document.getElementById('specialty').required = isTherapist;
     }
-});
+
+    patientTab.addEventListener('click', () => setRole('patient'));
+    therapistTab.addEventListener('click', () => setRole('therapist'));
+
+    certInput.addEventListener('change', () => {
+      certificateFiles = certificateFiles.concat(Array.from(certInput.files));
+      renderFileList();
+      certInput.value = '';
+    });
+
+    function renderFileList() {
+      fileListEl.innerHTML = '';
+      certificateFiles.forEach((f, i) => {
+        const row = document.createElement('div');
+        row.className = 'upload-file-item';
+        row.innerHTML = '<span>📎 ' + f.name + '</span>';
+        const removeBtn = document.createElement('button');
+        removeBtn.type = 'button';
+        removeBtn.textContent = '×';
+        removeBtn.addEventListener('click', () => {
+          certificateFiles.splice(i, 1);
+          renderFileList();
+        });
+        row.appendChild(removeBtn);
+        fileListEl.appendChild(row);
+      });
+    }
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const fname = document.getElementById('fname').value.trim();
+      const lname = document.getElementById('lname').value.trim();
+      const email = document.getElementById('email').value.trim();
+
+      if (role === 'therapist') {
+        Store.registerTherapist({
+          name: 'د. ' + fname + ' ' + lname,
+          email: email,
+          specialty: document.getElementById('specialty').value.trim(),
+          experienceYears: Number(document.getElementById('expYears').value) || 0,
+          bio: document.getElementById('bio').value.trim(),
+          certificateFiles: certificateFiles
+        });
+        // NOTE: a real back-end would flag the account "pending review" and
+        // notify the admin panel (pages/admin/therapists.html) instead of
+        // going straight to email verification.
+        window.location.href = 'verify-email.html';
+      } else {
+        // Persist the real registration so it shows up (with real data,
+        // status "pending") in pages/admin/users.html + patient-profile.html —
+        // see Store.registerPatient in assets/js/store.js.
+        const anonCheckbox = document.querySelector('.anon-checkbox');
+        Store.registerPatient({
+          name: fname + ' ' + lname,
+          email: email,
+          anonymousMode: !!(anonCheckbox && anonCheckbox.checked)
+        });
+        window.location.href = 'verify-email.html';
+      }
+    });
+  })();
 </script>
-@endsection
+</body>
+</html>

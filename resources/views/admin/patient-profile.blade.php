@@ -1,69 +1,230 @@
-@extends('layouts.admin')
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ملف المريض | إطمئن</title>
+  <link rel="icon" type="image/png" href="../../assets/images/favicon.png">
 
-@section('title', 'ملف المريض | إطمئن')
+  <link rel="stylesheet" href="../../assets/css/variables.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
 
-@section('content')
-<div class="dash-head">
-  <div>
-    <a href="{{ url('/admin/users') }}" style="font-size:13px; color:var(--teal-700); text-decoration:none;">← العودة لجمهور المستخدمين</a>
-    <h1 id="patientName" style="margin-top:4px;">ملف المريض</h1>
-  </div>
-</div>
+  <script src="../../assets/js/theme-switcher.js"></script>
+  <script src="../../assets/js/translations.js"></script>
+  <script src="../../assets/js/i18n.js"></script>
+  <script src="../../assets/js/store.js"></script>
+</head>
+<body>
 
-<div class="grid-2">
-  <div class="panel">
-    <h3 style="margin-bottom:12px;">بيانات الحساب</h3>
-    <p><b>البريد الإلكتروني:</b> <span id="patientEmail">--</span></p>
-    <p><b>الجامعة:</b> <span id="patientUni">--</span></p>
-    <p><b>عدد الجلسات:</b> <span id="patientSessions">0</span></p>
-    <p><b>الوضع المجهول:</b> <span id="patientAnon">--</span></p>
-  </div>
-
-  <div class="panel">
-    <h3 style="margin-bottom:12px;">إدارة الحالة</h3>
-    <div class="field" style="margin-bottom:14px;">
-      <label>حالة المريض</label>
-      <select id="patientStatusSelect" style="width:100%; padding:10px; border-radius:8px; border:1px solid var(--border); background:var(--bg-card); color:var(--ink-900);">
-        <option value="pending">قيد المراجعة</option>
-        <option value="accepted">مقبول</option>
-        <option value="rejected">مرفوض</option>
-        <option value="deleted">محذوف</option>
-      </select>
+<header class="site-header">
+  <div class="container">
+    <a href="../../index.html" class="logo"><img src="../../assets/images/logo-icon.png" alt="إطمئن" class="logo-mark"> إطمئن</a>
+    <nav class="main-nav"><span style="font-weight:800; color:var(--teal-700); font-size:14px;">بوابة الإدارة</span></nav>
+    <div class="header-actions">
+      <div class="toggle-group">
+        <button class="icon-btn theme-toggle-btn" type="button" aria-label="تبديل الوضع الليلي/النهاري">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1111.2 3 7 7 0 0021 12.8z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        </button>
+        <button class="icon-btn lang-toggle-btn" type="button" aria-label="Change language"><span class="lang-toggle-label">EN</span></button>
+      </div>
+      <div class="avatar" style="width:40px;height:40px;font-size:13px;">أد</div>
     </div>
-    <button class="btn btn-primary" id="savePatientStatusBtn" style="width:100%;">تعديل الحالة</button>
   </div>
+</header>
+
+<div class="dash-layout">
+  <div class="dash-overlay"></div>
+  <aside class="dash-sidebar" id="dashSidebar">
+    <button class="dash-sidebar-close" type="button" aria-label="إغلاق القائمة">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+    <div class="dash-user">
+      <div class="avatar">أد</div>
+      <div><b>مدير المنصة</b><span>صلاحيات كاملة</span></div>
+    </div>
+    <nav class="dash-nav">
+      <a href="dashboard.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+        <span data-i18n="sidebar.dashboard">لوحتي</span>
+      </a>
+      <a href="therapists.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
+        <span data-i18n="sidebar.therapistApprovals">اعتماد المعالجين</span>
+      </a>
+      <a href="users.html" class="active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+        <span data-i18n="sidebar.users">إدارة المستخدمين</span>
+      </a>
+      <a href="specialties.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a5 5 0 00-5 5v1.1A4 4 0 003 12a4 4 0 002 3.46V17a3 3 0 003 3h1"/><path d="M12 2a5 5 0 015 5v1.1A4 4 0 0121 12a4 4 0 01-2 3.46V17a3 3 0 01-3 3h-1"/></svg>
+        <span data-i18n="sidebar.specialties">التخصصات</span>
+      </a>
+      <a href="complaints.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+        <span data-i18n="sidebar.complaints">الشكاوى والتقارير</span>
+      </a>
+      <a href="../../index.html" style="margin-top:16px; border-top:1px solid var(--border); padding-top:16px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+        <span data-i18n="sidebar.logout">تسجيل الخروج</span>
+      </a>
+    </nav>
+  </aside>
+
+  <main class="dash-main">
+    <button class="dash-toggle" type="button" aria-expanded="false" aria-controls="dashSidebar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      <span data-i18n="sidebar.menu">القائمة</span>
+    </button>
+    <div class="dash-head">
+      <div><h1 id="pTitle">ملف المريض</h1><p><a href="users.html">&rarr; العودة لإدارة المستخدمين</a></p></div>
+      <span class="pill" id="pStatusPill">—</span>
+    </div>
+
+    <div id="notFoundMsg" class="panel" style="display:none;">
+      <p>تعذّر إيجاد هذا المستخدم. ربما تم حذفه أو أن الرابط غير صحيح.</p>
+    </div>
+
+    <div id="detailsWrap">
+      <div class="panel">
+        <h3>بيانات التسجيل</h3>
+        <div class="detail-grid">
+          <div class="detail-item"><span>الاسم</span><b id="fName">—</b></div>
+          <div class="detail-item"><span>البريد الإلكتروني</span><b id="fEmail">—</b></div>
+          <div class="detail-item"><span>رقم الهاتف</span><b id="fPhone">—</b></div>
+          <div class="detail-item"><span>الجامعة</span><b id="fUniversity">—</b></div>
+          <div class="detail-item"><span>تاريخ التسجيل</span><b id="fRegisteredAt">—</b></div>
+          <div class="detail-item"><span>عدد الجلسات</span><b id="fSessions">—</b></div>
+          <div class="detail-item"><span>الوضع المجهول</span><b id="fAnon">—</b></div>
+        </div>
+        <p class="status-history" id="fStatusHistory"></p>
+      </div>
+
+      <div class="panel">
+        <h3>إجراءات إدارة المريض</h3>
+        <div style="display:flex; flex-wrap:wrap; gap:10px;">
+          <button class="btn btn-primary" id="acceptBtn">قبول المريض</button>
+          <button class="btn btn-ghost" id="rejectBtn">رفض المريض</button>
+        </div>
+      </div>
+
+      <div class="danger-zone">
+        <h4>منطقة الإجراءات الحساسة</h4>
+        <p>هذه العملية نهائية: سيتم تعطيل الحساب وإلغاء جلساته المرتبطة، وسيصل سبب الحذف للمريض عبر البريد الإلكتروني.</p>
+        <button class="btn btn-danger" id="deleteBtn">حذف الحساب</button>
+      </div>
+    </div>
+  </main>
 </div>
 
-<div class="toast" id="patientToast"></div>
-@endsection
+<div class="toast" id="pToast"></div>
 
-@push('scripts')
+<script src="../../assets/js/main.js"></script>
+<script src="../../assets/js/admin-common.js"></script>
 <script>
   (function () {
     const params = new URLSearchParams(window.location.search);
-    const id = params.get('id');
-    const users = Store.getPlatformUsers();
-    const u = users.find(x => x.id === id) || users[0];
+    const userId = params.get('id');
+    let user = userId ? Store.getPlatformUser(userId) : null;
 
-    if (!u) return;
+    if (!user) {
+      document.getElementById('detailsWrap').style.display = 'none';
+      document.getElementById('pStatusPill').style.display = 'none';
+      document.getElementById('notFoundMsg').style.display = 'block';
+      return;
+    }
 
-    document.getElementById('patientName').textContent = u.name;
-    document.getElementById('patientEmail').textContent = u.email || 'غير محدد';
-    document.getElementById('patientUni').textContent = u.university || '—';
-    document.getElementById('patientSessions').textContent = u.sessionsCount;
-    document.getElementById('patientAnon').textContent = u.anonymousMode ? 'مفعّل' : 'غير مفعّل';
-    document.getElementById('patientStatusSelect').value = u.status;
+    function render() {
+      document.getElementById('pTitle').textContent = 'ملف ' + user.name;
+      document.getElementById('fName').textContent = user.name || '—';
+      document.getElementById('fEmail').textContent = user.email || '—';
+      document.getElementById('fPhone').textContent = user.phone || '—';
+      document.getElementById('fUniversity').textContent = user.university || '—';
+      document.getElementById('fRegisteredAt').textContent = user.registeredAt || '—';
+      document.getElementById('fSessions').textContent = String(user.sessionsCount || 0);
+      document.getElementById('fAnon').textContent = user.anonymousMode ? 'مفعّل' : 'غير مفعّل';
 
-    document.getElementById('savePatientStatusBtn').addEventListener('click', () => {
-      u.status = document.getElementById('patientStatusSelect').value;
-      Store.savePlatformUsers(users);
-      
-      if (typeof AdminUI !== 'undefined' && AdminUI.showToast) {
-        AdminUI.showToast('patientToast', 'تم تحديث حالة المريض بنجاح');
-      } else {
-        alert('تم تحديث حالة المريض بنجاح');
-      }
+      const pill = document.getElementById('pStatusPill');
+      pill.textContent = AdminUI.patientStatusLabel[user.status] || user.status;
+      pill.className = 'pill ' + (AdminUI.patientStatusPill[user.status] || 'pending');
+
+      const messages = {
+        accepted: 'تم قبول المستخدم لاستيفائه الشروط.',
+        rejected: 'تم رفض المستخدم لعدم استكمال الشروط المطلوبة' + (user.statusReason ? ': ' + user.statusReason : '.'),
+        deleted: 'تم حذف الحساب' + (user.statusReason ? ' بسبب: ' + user.statusReason : '.'),
+        pending: 'الحساب قيد المراجعة ولم يُتخذ أي إجراء بعد.'
+      };
+      document.getElementById('fStatusHistory').textContent =
+        messages[user.status] + (user.statusAt ? ' — ' + user.statusAt : '');
+
+      document.getElementById('acceptBtn').disabled = user.status === 'accepted' || user.status === 'deleted';
+      document.getElementById('rejectBtn').disabled = user.status === 'deleted';
+      document.getElementById('deleteBtn').disabled = user.status === 'deleted';
+      if (user.status === 'deleted') document.getElementById('deleteBtn').textContent = 'تم حذف هذا الحساب';
+    }
+
+    render();
+
+    document.getElementById('acceptBtn').addEventListener('click', () => {
+      AdminUI.confirmModal({
+        title: 'قبول المريض',
+        text: 'سيتم تفعيل حساب "' + user.name + '" وتصبح حالته "مقبول".',
+        confirmLabel: 'تأكيد القبول',
+        onConfirm: () => {
+          user = Store.acceptPlatformUser(user.id);
+          render();
+          AdminUI.toast('pToast', 'تم قبول المستخدم لاستيفائه الشروط.');
+        }
+      });
+    });
+
+    document.getElementById('rejectBtn').addEventListener('click', () => {
+      AdminUI.reasonModal({
+        title: 'رفض المريض',
+        text: 'سيتم إرسال سبب الرفض إلى بريد المريض الإلكتروني.',
+        placeholder: 'مثال: لم يتم استكمال بيانات إثبات الصفة الجامعية.',
+        confirmLabel: 'تأكيد الرفض',
+        danger: true,
+        onConfirm: (reason) => {
+          user = Store.rejectPlatformUser(user.id, reason);
+          render();
+          if (user.email) {
+            AdminUI.sendMail({
+              to: user.email,
+              subject: 'تحديث حالة حسابك في إطمئن',
+              body: 'مرحبًا ' + user.name + '،\n\nتم رفض طلبك لعدم استكمال الشروط المطلوبة.\nسبب الرفض: ' + reason + '\n\nفريق إطمئن'
+            });
+          }
+          AdminUI.toast('pToast', 'تم رفض طلب المريض وإرسال السبب بالبريد الإلكتروني.');
+        }
+      });
+    });
+
+    document.getElementById('deleteBtn').addEventListener('click', () => {
+      AdminUI.reasonModal({
+        title: 'حذف حساب المريض',
+        text: 'هذا الإجراء نهائي. اكتب سبب الحذف — سيُرسل إلى بريد المريض الإلكتروني.',
+        placeholder: 'مثال: شكوى مقدّمة من أحد المعالجين بخصوص سلوك غير لائق.',
+        confirmLabel: 'تأكيد الحذف',
+        danger: true,
+        onConfirm: (reason) => {
+          Store.deletePlatformUser(user.id, reason);
+          user = Store.getPlatformUser(user.id);
+          render();
+          if (user.email) {
+            AdminUI.sendMail({
+              to: user.email,
+              subject: 'تم حذف حسابك في إطمئن',
+              body: 'مرحبًا ' + user.name + '،\n\nتم حذف حسابك على منصة إطمئن.\nالسبب: ' + reason + '\n\nفريق إطمئن'
+            });
+          }
+          AdminUI.toast('pToast', 'تم حذف الحساب وإرسال السبب بالبريد الإلكتروني.');
+        }
+      });
     });
   })();
 </script>
-@endpush
+</body>
+</html>

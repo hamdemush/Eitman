@@ -1,35 +1,108 @@
-@extends('layouts.admin')
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>التخصصات | إطمئن</title>
+  <link rel="icon" type="image/png" href="../../assets/images/favicon.png">
 
-@section('title', 'التخصصات | إطمئن')
+  <link rel="stylesheet" href="../../assets/css/variables.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
 
-@section('content')
-<div class="dash-head">
-  <div>
-    <h1>إدارة التخصصات</h1>
-    <p>التخصصات المستخدمة في الاستبيان الأولي ونظام المطابقة الذكي.</p>
+  <script src="../../assets/js/theme-switcher.js"></script>
+  <script src="../../assets/js/translations.js"></script>
+  <script src="../../assets/js/i18n.js"></script>
+  <script src="../../assets/js/store.js"></script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a href="../../index.html" class="logo"><img src="../../assets/images/logo-icon.png" alt="إطمئن" class="logo-mark"> إطمئن</a>
+    <nav class="main-nav"><span style="font-weight:800; color:var(--teal-700); font-size:14px;">بوابة الإدارة</span></nav>
+    <div class="header-actions">
+      <div class="toggle-group">
+        <button class="icon-btn theme-toggle-btn" type="button" aria-label="تبديل الوضع الليلي/النهاري">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1111.2 3 7 7 0 0021 12.8z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        </button>
+        <button class="icon-btn lang-toggle-btn" type="button" aria-label="Change language"><span class="lang-toggle-label">EN</span></button>
+      </div>
+      <div class="avatar" style="width:40px;height:40px;font-size:13px;">أد</div>
+    </div>
   </div>
-  <button class="btn btn-primary btn-sm" id="addSpecialtyBtn">+ إضافة تخصص</button>
+</header>
+
+<div class="dash-layout">
+  <div class="dash-overlay"></div>
+  <aside class="dash-sidebar" id="dashSidebar">
+    <button class="dash-sidebar-close" type="button" aria-label="إغلاق القائمة">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+    <div class="dash-user">
+      <div class="avatar">أد</div>
+      <div><b>مدير المنصة</b><span>صلاحيات كاملة</span></div>
+    </div>
+    <nav class="dash-nav">
+      <a href="dashboard.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+        <span data-i18n="sidebar.dashboard">لوحتي</span>
+      </a>
+      <a href="therapists.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
+        <span data-i18n="sidebar.therapistApprovals">اعتماد المعالجين</span>
+      </a>
+      <a href="users.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+        <span data-i18n="sidebar.users">إدارة المستخدمين</span>
+      </a>
+      <a href="specialties.html" class="active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a5 5 0 00-5 5v1.1A4 4 0 003 12a4 4 0 002 3.46V17a3 3 0 003 3h1"/><path d="M12 2a5 5 0 015 5v1.1A4 4 0 0121 12a4 4 0 01-2 3.46V17a3 3 0 01-3 3h-1"/></svg>
+        <span data-i18n="sidebar.specialties">التخصصات</span>
+      </a>
+      <a href="complaints.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+        <span data-i18n="sidebar.complaints">الشكاوى والتقارير</span>
+      </a>
+      <a href="../../index.html" style="margin-top:16px; border-top:1px solid var(--border); padding-top:16px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+        <span data-i18n="sidebar.logout">تسجيل الخروج</span>
+      </a>
+    </nav>
+  </aside>
+
+  <main class="dash-main">
+    <button class="dash-toggle" type="button" aria-expanded="false" aria-controls="dashSidebar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      <span data-i18n="sidebar.menu">القائمة</span>
+    </button>
+    <div class="dash-head">
+      <div><h1>إدارة التخصصات</h1><p>التخصصات المستخدمة في الاستبيان الأولي ونظام المطابقة الذكي.</p></div>
+      <button class="btn btn-primary btn-sm" id="addSpecialtyBtn">+ إضافة تخصص</button>
+    </div>
+
+    <div class="panel">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>اسم التخصص</th>
+            <th>عدد المعالجين</th>
+            <th>عدد الحالات المرتبطة</th>
+            <th>الحالة</th>
+            <th>الإجراء</th>
+          </tr>
+        </thead>
+        <tbody id="specialtiesBody"></tbody>
+      </table>
+    </div>
+  </main>
 </div>
 
-<div class="panel">
-  <table class="data-table">
-    <thead>
-      <tr>
-        <th>اسم التخصص</th>
-        <th>عدد المعالجين</th>
-        <th>عدد الحالات المرتبطة</th>
-        <th>الحالة</th>
-        <th>الإجراء</th>
-      </tr>
-    </thead>
-    <tbody id="specialtiesBody"></tbody>
-  </table>
-</div>
-
-{{-- النافذة المنبثقة لتعديل وإضافة التخصص --}}
 <div class="modal-overlay" id="editModal">
   <div class="modal-box">
-    <h3 id="modalTitle">تعديل التخصص</h3>
+    <h3>تعديل التخصص</h3>
     <div class="field" style="margin-bottom:14px;">
       <label for="editNameInput">اسم التخصص</label>
       <input type="text" id="editNameInput" style="width:100%; padding:12px 14px; border-radius:12px; border:1.5px solid var(--border); font-family:inherit; font-size:14px; background:var(--bg-card); color:var(--ink-900);">
@@ -40,20 +113,15 @@
     </div>
   </div>
 </div>
-
 <div class="toast" id="specialtiesToast"></div>
-@endsection
 
-@push('scripts')
+<script src="../../assets/js/main.js"></script>
+<script src="../../assets/js/admin-common.js"></script>
 <script>
   (function () {
     const tbody = document.getElementById('specialtiesBody');
     const editModal = document.getElementById('editModal');
     const editNameInput = document.getElementById('editNameInput');
-    const editSaveBtn = document.getElementById('editSaveBtn');
-    const editCancelBtn = document.getElementById('editCancelBtn');
-    const addSpecialtyBtn = document.getElementById('addSpecialtyBtn');
-    const modalTitle = document.getElementById('modalTitle');
     let editingId = null;
 
     function render() {
@@ -83,57 +151,65 @@
     }
 
     tbody.addEventListener('click', (e) => {
-      const target = e.target.closest('button');
-      if (!target) return;
-      const action = target.getAttribute('data-action');
-      const id = target.getAttribute('data-id');
+      const btn = e.target.closest('button[data-action]');
+      if (!btn) return;
+      const id = btn.getAttribute('data-id');
+      const action = btn.getAttribute('data-action');
+      const sp = Store.getSpecialties().find((s) => s.id === id);
+      if (!sp) return;
 
-      if (action === 'activate') {
-        Store.updateSpecialty(id, { active: true });
-        render();
-      } else if (action === 'edit') {
-        const specialties = Store.getSpecialties();
-        const item = specialties.find(s => s.id === id);
-        if (item) {
-          editingId = id;
-          modalTitle.textContent = 'تعديل التخصص';
-          editNameInput.value = item.name;
-          editModal.classList.add('active');
-        }
+      if (action === 'edit') {
+        editingId = id;
+        editNameInput.value = sp.name;
+        editModal.classList.add('open');
+        setTimeout(() => editNameInput.focus(), 50);
       } else if (action === 'delete') {
-        if (confirm('هل أنت تأكد من حذف هذا التخصص؟')) {
-          Store.deleteSpecialty(id);
-          render();
-        }
+        AdminUI.confirmModal({
+          title: 'حذف التخصص',
+          text: 'سيتم حذف تخصص "' + sp.name + '" نهائيًا من قائمة الاستبيان ونظام المطابقة. هل تريد المتابعة؟',
+          confirmLabel: 'تأكيد الحذف',
+          danger: true,
+          onConfirm: () => {
+            Store.deleteSpecialty(id);
+            render();
+            AdminUI.toast('specialtiesToast', 'تم حذف التخصص بنجاح.');
+          }
+        });
+      } else if (action === 'activate') {
+        Store.toggleSpecialtyActive(id);
+        render();
+        AdminUI.toast('specialtiesToast', 'تم تفعيل التخصص، وأصبح متاحًا في الاستبيان الأولي.');
       }
     });
 
-    addSpecialtyBtn.addEventListener('click', () => {
-      editingId = null;
-      modalTitle.textContent = 'إضافة تخصص جديد';
-      editNameInput.value = '';
-      editModal.classList.add('active');
-    });
-
-    editCancelBtn.addEventListener('click', () => {
-      editModal.classList.remove('active');
-    });
-
-    editSaveBtn.addEventListener('click', () => {
-      const name = editNameInput.value.trim();
-      if (!name) return;
-
-      if (editingId) {
-        Store.updateSpecialty(editingId, { name });
-      } else {
-        Store.addSpecialty({ name, therapistsCount: 0, casesCount: 0, active: true });
-      }
-
-      editModal.classList.remove('active');
+    document.getElementById('editCancelBtn').addEventListener('click', () => editModal.classList.remove('open'));
+    editModal.addEventListener('click', (e) => { if (e.target === editModal) editModal.classList.remove('open'); });
+    document.getElementById('editSaveBtn').addEventListener('click', () => {
+      const newName = editNameInput.value.trim();
+      if (!newName || !editingId) return;
+      Store.updateSpecialtyName(editingId, newName);
+      editModal.classList.remove('open');
       render();
+      AdminUI.toast('specialtiesToast', 'تم تعديل التخصص بنجاح.');
     });
 
+    document.getElementById('addSpecialtyBtn').addEventListener('click', () => {
+      AdminUI.reasonModal({
+        title: 'إضافة تخصص جديد',
+        text: 'أدخل اسم التخصص — سيُضاف بحالة "غير مفعّل" حتى تفعيله.',
+        placeholder: 'مثال: صعوبات التعلّم',
+        confirmLabel: 'إضافة',
+        onConfirm: (name) => {
+          Store.addSpecialty(name);
+          render();
+          AdminUI.toast('specialtiesToast', 'تمت إضافة التخصص، وسيظهر بحالة "غير مفعّل" حتى تفعيله.');
+        }
+      });
+    });
+
+    AdminUI.initActionMenus(tbody);
     render();
   })();
 </script>
-@endpush
+</body>
+</html>

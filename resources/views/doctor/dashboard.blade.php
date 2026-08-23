@@ -1,188 +1,170 @@
-@extends('layouts.app')
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة المعالج | إطمئن</title>
+  <link rel="icon" type="image/png" href="../../assets/images/favicon.png">
 
-@section('title', 'لوحة التحكم الرئيسيّة | الأدمن')
+  <link rel="stylesheet" href="../../assets/css/variables.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
 
-@section('content')
-<section class="section" style="padding-top: 30px;">
+  <script src="../../assets/js/theme-switcher.js"></script>
+  <script src="../../assets/js/translations.js"></script>
+  <script src="../../assets/js/i18n.js"></script>
+</head>
+<body>
+
+<header class="site-header">
   <div class="container">
-    
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
-      <div>
-        <h1 style="font-size: 26px; font-weight: bold;">لوحة تحكم النظام</h1>
-        <p style="color: var(--text-muted); font-size: 14px;">متابعة إحصائيات منصة إطمئن والحسابات النشطة</p>
+    <a href="../../index.html" class="logo"><img src="../../assets/images/logo-icon.png" alt="إطمئن" class="logo-mark"> إطمئن</a>
+    <nav class="main-nav">
+      <span style="font-weight:800; color:var(--teal-700); font-size:14px;">بوابة المعالج</span>
+    </nav>
+    <div class="header-actions">
+      <div class="toggle-group">
+        <button class="icon-btn theme-toggle-btn" type="button" aria-label="تبديل الوضع الليلي/النهاري">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1111.2 3 7 7 0 0021 12.8z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        </button>
+        <button class="icon-btn lang-toggle-btn" type="button" aria-label="Change language"><span class="lang-toggle-label">EN</span></button>
       </div>
-      <button onclick="fetchAdminStats()" class="btn btn-sm btn-primary" style="display: flex; align-items: center; gap: 5px;">
-       تحديث البيانات
-      </button>
+      <div class="avatar" style="width:40px;height:40px;font-size:13px;">م.ع</div>
     </div>
-
-    <!-- بطاقات الإحصائيات (Stats Cards) -->
-    <div class="grid grid-4" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 35px;">
-      
-      <!-- إجمالي الطلاب -->
-      <div class="question-card" style="padding: 20px; border-right: 4px solid var(--teal-700);">
-        <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 8px;">إجمالي الطلاب / المرضى</p>
-        <h2 id="totalPatients" style="font-size: 28px; font-weight: bold;">--</h2>
-      </div>
-
-      <!-- إجمالي المعالجين -->
-      <div class="question-card" style="padding: 20px; border-right: 4px solid #2196F3;">
-        <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 8px;">المعالجين المعتمدين</p>
-        <h2 id="totalDoctors" style="font-size: 28px; font-weight: bold;">--</h2>
-      </div>
-
-      <!-- الطلبات المعلقة -->
-      <div class="question-card" style="padding: 20px; border-right: 4px solid #FF9800;">
-        <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 8px;">طلبات معالجين معلقة</p>
-        <h2 id="pendingDoctors" style="font-size: 28px; font-weight: bold;">--</h2>
-      </div>
-
-      <!-- الجلسات المنفذة -->
-      <div class="question-card" style="padding: 20px; border-right: 4px solid #4CAF50;">
-        <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 8px;">إجمالي الجلسات</p>
-        <h2 id="totalSessions" style="font-size: 28px; font-weight: bold;">--</h2>
-      </div>
-
-    </div>
-
-    <!-- جدول المعالجين بانتظار الموافقة -->
-    <div class="question-card" style="padding: 0; overflow: hidden;">
-      <div style="padding: 18px 20px; background: #f8f9fa; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
-        <h3 style="font-size: 16px; font-weight: bold; margin: 0;">طلبات انضمام الأخصائيين الجدد</h3>
-        <a href="{{ route('admin.therapists') }}" style="font-size: 13px; color: var(--teal-700); text-decoration: underline;">عرض الكل</a>
-      </div>
-
-      <div style="overflow-x: auto;">
-        <table style="width: 100%; border-collapse: collapse; text-align: right; font-size: 14px;">
-          <thead>
-            <tr style="background: #ffffff; border-bottom: 2px solid var(--border-color); color: var(--text-muted);">
-              <th style="padding: 12px 20px;">الاسم</th>
-              <th style="padding: 12px 20px;">البريد الإلكتروني</th>
-              <th style="padding: 12px 20px;">التاريخ</th>
-              <th style="padding: 12px 20px; text-align: center;">التحكم</th>
-            </tr>
-          </thead>
-          <tbody id="pendingPsychologistsTable">
-            <tr><td colspan="4" style="text-align: center; padding: 25px; color: var(--text-muted);">جاري تحميل الطلبات...</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
   </div>
-</section>
+</header>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    fetchAdminStats();
-    fetchPendingPsychologists();
-});
+<div class="dash-layout">
+  <div class="dash-overlay"></div>
+  <aside class="dash-sidebar" id="dashSidebar">
+    <button class="dash-sidebar-close" type="button" aria-label="إغلاق القائمة">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+    <div class="dash-user">
+      <div class="avatar">م.ع</div>
+      <div><b>د. روان الأسي</b><span>علاج سلوكي معرفي</span></div>
+    </div>
+    <nav class="dash-nav">
+      <a href="dashboard.html" class="active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+        <span data-i18n="sidebar.dashboard">لوحتي</span>
+      </a>
+      <a href="requests.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.8 19.8 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.8 19.8 0 012.12 4.18 2 2 0 014.11 2h3a2 2 0 012 1.72c.13.99.36 1.96.68 2.9a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.18-1.18a2 2 0 012.11-.45c.94.32 1.91.55 2.9.68A2 2 0 0122 16.92z"/></svg>
+        <span data-i18n="sidebar.requests">طلبات الاستشارة</span>
+      </a>
+      <a href="schedule.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>
+        <span data-i18n="sidebar.schedule">أوقات العمل</span>
+      </a>
+      <a href="patient-notes.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12h6M9 16h6M9 8h6M5 3h11l3 3v15H5z"/></svg>
+        <span data-i18n="sidebar.patients">المرضي</span>
+      </a>
+      <a href="chat.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.5 8.5 0 01-12.3 7.6L3 20l1-5.6A8.5 8.5 0 1121 11.5z"/></svg>
+        <span data-i18n="sidebar.chat">الدردشة</span>
+      </a>
+      <a href="profile.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0116 0"/></svg>
+        <span data-i18n="sidebar.profile">الملف الشخصي</span>
+      </a>
+      <a href="../../index.html" style="margin-top:16px; border-top:1px solid var(--border); padding-top:16px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+        <span data-i18n="sidebar.logout">تسجيل الخروج</span>
+      </a>
+    </nav>
+  </aside>
 
-// 1. جلب الإحصائيات العامة
-async function fetchAdminStats() {
-    const token = localStorage.getItem('auth_token');
-    try {
-        const res = await fetch('/api/admin/stats', {
-            headers: { 
-                'Authorization': `Bearer ${token}`,
-                'Accept': 'application/json' 
-            }
-        });
-        const data = await res.json();
+  <main class="dash-main">
+    <button class="dash-toggle" type="button" aria-expanded="false" aria-controls="dashSidebar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      <span data-i18n="sidebar.menu">القائمة</span>
+    </button>
+    <div class="dash-head">
+      <div>
+        <h1>أهلاً، د. مريم 👋</h1>
+        <p>لديك 3 جلسات اليوم و5 طلبات استشارة جديدة بانتظار الرد.</p>
+      </div>
+      <a href="requests.html" class="btn btn-primary btn-sm">مراجعة الطلبات</a>
+    </div>
 
-        if (res.ok) {
-            document.getElementById('totalPatients').innerText = data.total_patients || data.patients_count || 0;
-            document.getElementById('totalDoctors').innerText = data.total_doctors || data.psychologists_count || 0;
-            document.getElementById('pendingDoctors').innerText = data.pending_doctors || data.pending_count || 0;
-            document.getElementById('totalSessions').innerText = data.total_sessions || data.sessions_count || 0;
-        }
-    } catch (err) {
-        console.error('فشل جلب إحصائيات الأدمن:', err);
-    }
-}
+    <div class="stat-cards">
+      <div class="stat-card">
+        <div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg></div>
+        <b>3</b><span>جلسات اليوم</span>
+      </div>
+      <div class="stat-card">
+        <div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.8 19.8 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.8 19.8 0 012.12 4.18 2 2 0 014.11 2h3a2 2 0 012 1.72c.13.99.36 1.96.68 2.9a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.18-1.18a2 2 0 012.11-.45c.94.32 1.91.55 2.9.68A2 2 0 0122 16.92z"/></svg></div>
+        <b>5</b><span>طلبات بانتظار الرد</span>
+      </div>
+      <div class="stat-card">
+        <div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12h6M9 16h6M9 8h6M5 3h11l3 3v15H5z"/></svg></div>
+        <b>28</b><span>مريض نشط</span>
+      </div>
+      <div class="stat-card">
+        <div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg></div>
+        <b>4.9</b><span>متوسط التقييم (120)</span>
+      </div>
+    </div>
 
-// 2. جلب الطلبات المعلقة للمعالجين
-async function fetchPendingPsychologists() {
-    const token = localStorage.getItem('auth_token');
-    const tableBody = document.getElementById('pendingPsychologistsTable');
+    <div class="dash-grid">
+      <div>
+        <div class="panel">
+          <h3>جلسات اليوم — الأربعاء 9 يوليو</h3>
+          <div class="session-item">
+            <div class="avatar">ط</div>
+            <div style="flex:1;"><b>مريض مجهول #A214</b><span>10:00 ص — محادثة نصية</span></div>
+            <span class="pill upcoming">قادمة</span>
+          </div>
+          <div class="session-item">
+            <div class="avatar">ط</div>
+            <div style="flex:1;"><b>خليل أبو رمضان</b><span>12:00 م — محادثة نصية</span></div>
+            <span class="pill upcoming">قادمة</span>
+          </div>
+          <div class="session-item">
+            <div class="avatar">ط</div>
+            <div style="flex:1;"><b>مريضة مجهولة #B091</b><span>4:00 م — مكالمة صوتية</span></div>
+            <span class="pill upcoming">قادمة</span>
+          </div>
+        </div>
 
-    try {
-        const res = await fetch('/api/admin/pending-psychologists', {
-            headers: { 
-                'Authorization': `Bearer ${token}`,
-                'Accept': 'application/json' 
-            }
-        });
-        const data = await res.json();
-        const pendingList = Array.isArray(data) ? data : (data.data || []);
+        <div class="panel">
+          <h3>أحدث طلبات الاستشارة</h3>
+          <div class="session-item">
+            <div class="avatar">ط</div>
+            <div style="flex:1;"><b>مريض مجهول #C558</b><span>القلق والتوتر الدراسي — نسبة توافق 92٪</span></div>
+            <span class="pill pending">بانتظار الرد</span>
+          </div>
+          <div class="session-item">
+            <div class="avatar">ط</div>
+            <div style="flex:1;"><b>علاء غزال</b><span>الاحتراق الأكاديمي — نسبة توافق 88٪</span></div>
+            <span class="pill pending">بانتظار الرد</span>
+          </div>
+          <a href="requests.html" class="link-arrow" style="margin-top:14px;">عرض جميع الطلبات
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l-6 6 6 6"/></svg>
+          </a>
+        </div>
+      </div>
 
-        if (pendingList.length === 0) {
-            tableBody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 25px; color: var(--text-muted);">لا توجد طلبات انضمام معلقة حالياً.</td></tr>';
-            return;
-        }
+      <div>
+        <div class="panel">
+          <h3>هذا الشهر</h3>
+          <div class="mood-chart">
+            <div class="bar-wrap"><div class="bar" style="height:50%;"></div><span>أسبوع 1</span></div>
+            <div class="bar-wrap"><div class="bar" style="height:65%;"></div><span>أسبوع 2</span></div>
+            <div class="bar-wrap"><div class="bar" style="height:55%;"></div><span>أسبوع 3</span></div>
+            <div class="bar-wrap"><div class="bar" style="height:78%;"></div><span>أسبوع 4</span></div>
+          </div>
+          <p style="font-size:12.5px; margin-top:10px;">عدد الجلسات المكتملة أسبوعيًا</p>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
 
-        tableBody.innerHTML = '';
-        pendingList.forEach(doc => {
-            const tr = document.createElement('tr');
-            tr.style.borderBottom = '1px solid var(--border-color)';
-            tr.innerHTML = `
-                <td style="padding: 12px 20px; font-weight: bold;">${doc.name}</td>
-                <td style="padding: 12px 20px;">${doc.email}</td>
-                <td style="padding: 12px 20px; color: var(--text-muted);">${new Date(doc.created_at || Date.now()).toLocaleDateString('ar-EG')}</td>
-                <td style="padding: 12px 20px; text-align: center;">
-                    <button onclick="approvePsychologist(${doc.id})" class="btn btn-sm btn-primary" style="padding: 4px 12px; font-size: 12px; margin-left: 5px;">قبول</button>
-                    <button onclick="rejectPsychologist(${doc.id})" class="btn btn-sm" style="padding: 4px 12px; font-size: 12px; background: #ffebee; color: #c62828;">رفض</button>
-                </td>
-            `;
-            tableBody.appendChild(tr);
-        });
-    } catch (err) {
-        tableBody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 25px; color: #c62828;">تعذر تحميل بيانات الطلبات.</td></tr>';
-    }
-}
-
-// 3. قبول معالج
-async function approvePsychologist(id) {
-    const token = localStorage.getItem('auth_token');
-    if (!confirm('هل أنت تأكد من قبول طلب هذا المعالج؟')) return;
-
-    try {
-        const res = await fetch(`/api/admin/psychologists/${id}/approve`, {
-            method: 'PUT',
-            headers: { 
-                'Authorization': `Bearer ${token}`,
-                'Accept': 'application/json' 
-            }
-        });
-        if (res.ok) {
-            fetchAdminStats();
-            fetchPendingPsychologists();
-        }
-    } catch (err) {
-        alert('حدث خطأ أثناء تنفيذ الطلب.');
-    }
-}
-
-// 4. رفض معالج
-async function rejectPsychologist(id) {
-    const token = localStorage.getItem('auth_token');
-    if (!confirm('هل أنت تأكد من رفض هذا الطلب؟')) return;
-
-    try {
-        const res = await fetch(`/api/admin/psychologists/${id}/reject`, {
-            method: 'DELETE',
-            headers: { 
-                'Authorization': `Bearer ${token}`,
-                'Accept': 'application/json' 
-            }
-        });
-        if (res.ok) {
-            fetchAdminStats();
-            fetchPendingPsychologists();
-        }
-    } catch (err) {
-        alert('حدث خطأ أثناء تنفيذ الطلب.');
-    }
-}
-</script>
-@endsection
+<script src="../../assets/js/main.js"></script>
+</body>
+</html>

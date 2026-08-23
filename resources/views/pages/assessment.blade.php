@@ -1,161 +1,177 @@
-@extends('layouts.app')
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الاستبيان الأولي | إطمئن</title>
+  <link rel="icon" type="image/png" href="../assets/images/favicon.png">
 
-@section('title', 'التقييم الذاتي | إطمئن')
+  <link rel="stylesheet" href="../assets/css/variables.css">
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
 
-@section('content')
-<section class="section" style="padding-top: 40px;">
-  <div class="container" style="max-width: 700px;">
-    
-    <div style="text-align: center; margin-bottom: 30px;">
-      <h1 style="font-size: 28px; margin-bottom: 10px;">التقييم النفسي المبدئي</h1>
-      <p style="color: var(--text-muted);">أجب عن الأسئلة التالية بصدق لنتمكن من توجيهك للمختص الأنسب لحالتك. جميع البيانات مشفرة وسرية.</p>
+  <script src="../assets/js/theme-switcher.js"></script>
+  <script src="../assets/js/translations.js"></script>
+  <script src="../assets/js/i18n.js"></script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a href="../index.html" class="logo"><img src="../assets/images/logo-icon.png" alt="إطمئن" class="logo-mark"> إطمئن</a>
+    <nav class="main-nav">
+      <a href="../index.html" data-i18n="nav.home">الرئيسية</a>
+      <a href="specialists.html" data-i18n="nav.specialists">ابحث عن معالج</a>
+      <a href="articles.html" data-i18n="nav.articles">المقالات</a>
+      <a href="about.html" data-i18n="nav.about">معلومات عنا</a>
+      <a href="emergency.html" data-i18n="nav.emergency">حالات الطوارئ</a>
+    </nav>
+    <div class="header-actions">
+      <a href="patient/dashboard.html" class="link-muted" data-i18n="assessment.skip">تخطي الاستبيان</a>
+      <div class="toggle-group">
+        <button class="icon-btn theme-toggle-btn" type="button" aria-label="تبديل الوضع الليلي/النهاري">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1111.2 3 7 7 0 0021 12.8z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        </button>
+        <button class="icon-btn lang-toggle-btn" type="button" aria-label="Change language">
+          <span class="lang-toggle-label">EN</span>
+        </button>
+      </div>
     </div>
+  </div>
+</header>
 
-    <!-- رسالة الخطأ أو النجاح -->
-    <div id="alertMessage" style="display:none; padding:15px; border-radius:8px; margin-bottom:20px; font-weight:bold; text-align:center;"></div>
+<section class="page-hero page-hero-photo" style="background-image: linear-gradient(160deg, rgba(15,53,50,.88), rgba(10,38,36,.86)), url('../assets/images/meditation-river.jpg');">
+  <div class="container">
+    <span class="badge">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a5 5 0 00-5 5v1.1A4 4 0 003 12a4 4 0 002 3.46V17a3 3 0 003 3h1"/><path d="M12 2a5 5 0 015 5v1.1A4 4 0 0121 12a4 4 0 01-2 3.46V17a3 3 0 01-3 3h-1"/></svg>
+      <span data-i18n="assessment.badge">نظام المطابقة الذكي</span>
+    </span>
+    <h1 data-i18n="assessment.title">لنتعرف على احتياجك</h1>
+    <p data-i18n="assessment.subtitle">إجاباتك سرّية تمامًا، وتُستخدم فقط لترشيح المعالج الأنسب لحالتك.</p>
+  </div>
+</section>
 
-    <div class="question-card">
-      <form id="assessmentForm">
-        
-        <!-- سؤال 1 -->
-        <div class="field" style="margin-bottom: 25px;">
-          <label style="font-size: 16px; margin-bottom: 10px; display: block;">1. خلال الأسبوعين الماضيين، كم مرة شعرت بقلة الاهتمام أو المتعة في القيام بالأشياء؟</label>
-          <select class="form-control" name="q1" required style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color);">
-            <option value="" disabled selected>اختر الإجابة</option>
-            <option value="0">إطلاقاً (0)</option>
-            <option value="1">عدة أيام (1)</option>
-            <option value="2">أكثر من نصف الأيام (2)</option>
-            <option value="3">كل يوم تقريباً (3)</option>
-          </select>
+<!-- =========================================================
+     ASSESSMENT FORM
+     Each ".assess-step" block is one question; only one is shown
+     at a time. See assets/js/assessment.js for the stepper logic.
+     ========================================================= -->
+<section class="section" style="padding-top:30px;">
+  <div class="container assess-shell">
+
+    <form id="assess-form">
+      <div class="progress-track"><div class="progress-fill"></div></div>
+      <div class="progress-label">
+        <span>السؤال <span class="current-step">1</span> من <span class="total-step">5</span></span>
+        <span data-i18n="assessment.timeHint">يستغرق أقل من دقيقتين</span>
+      </div>
+
+      <!-- Step 1 -->
+      <div class="assess-step question-card">
+        <h3>ما الذي يشغل بالك هذه الفترة بشكل أساسي؟</h3>
+        <div class="option-list">
+          <label class="option"><input type="radio" name="q1"> القلق والتوتر الدراسي</label>
+          <label class="option"><input type="radio" name="q1"> الشعور بالحزن أو انخفاض المزاج</label>
+          <label class="option"><input type="radio" name="q1"> صعوبات في العلاقات الاجتماعية أو الأسرية</label>
+          <label class="option"><input type="radio" name="q1"> اضطرابات النوم أو التركيز</label>
+          <label class="option"><input type="radio" name="q1"> لست متأكدًا، أحتاج فقط للحديث</label>
         </div>
+      </div>
 
-        <!-- سؤال 2 -->
-        <div class="field" style="margin-bottom: 25px;">
-          <label style="font-size: 16px; margin-bottom: 10px; display: block;">2. كم مرة شعرت بالإحباط، الاكتئاب، أو اليأس؟</label>
-          <select class="form-control" name="q2" required style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color);">
-            <option value="" disabled selected>اختر الإجابة</option>
-            <option value="0">إطلاقاً (0)</option>
-            <option value="1">عدة أيام (1)</option>
-            <option value="2">أكثر من نصف الأيام (2)</option>
-            <option value="3">كل يوم تقريباً (3)</option>
-          </select>
+      <!-- Step 2 -->
+      <div class="assess-step question-card" style="display:none;">
+        <h3>منذ متى وأنت تشعر بهذا الأمر؟</h3>
+        <div class="option-list">
+          <label class="option"><input type="radio" name="q2"> منذ أقل من أسبوعين</label>
+          <label class="option"><input type="radio" name="q2"> منذ شهر تقريبًا</label>
+          <label class="option"><input type="radio" name="q2"> منذ عدة أشهر</label>
+          <label class="option"><input type="radio" name="q2"> منذ أكثر من سنة</label>
         </div>
+      </div>
 
-        <!-- سؤال 3 -->
-        <div class="field" style="margin-bottom: 25px;">
-          <label style="font-size: 16px; margin-bottom: 10px; display: block;">3. هل تواجه صعوبة في النوم أو تنام لفترات أطول من المعتاد؟</label>
-          <select class="form-control" name="q3" required style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color);">
-            <option value="" disabled selected>اختر الإجابة</option>
-            <option value="0">إطلاقاً (0)</option>
-            <option value="1">عدة أيام (1)</option>
-            <option value="2">أكثر من نصف الأيام (2)</option>
-            <option value="3">كل يوم تقريباً (3)</option>
-          </select>
+      <!-- Step 3 -->
+      <div class="assess-step question-card" style="display:none;">
+        <h3>كيف تقيّم تأثير هذا الشعور على حياتك الدراسية اليومية؟</h3>
+        <div class="option-list">
+          <label class="option"><input type="radio" name="q3"> تأثير بسيط، أستطيع التأقلم</label>
+          <label class="option"><input type="radio" name="q3"> تأثير متوسط، يزعجني أحيانًا</label>
+          <label class="option"><input type="radio" name="q3"> تأثير كبير، يعيق تركيزي ودراستي</label>
         </div>
+      </div>
 
-        <!-- قسم الملاحظات -->
-        <div class="field" style="margin-bottom: 25px;">
-          <label style="font-size: 16px; margin-bottom: 10px; display: block;">هل تود إضافة أي ملاحظات أخرى حول مشاعرك مؤخراً؟ (اختياري)</label>
-          <textarea id="notes" class="form-control" rows="4" placeholder="اكتب أي شيء تود أن يعرفه المعالج..." style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color);"></textarea>
+      <!-- Step 4 -->
+      <div class="assess-step question-card" style="display:none;">
+        <h3>ما هو أسلوب الجلسة الذي تفضله؟</h3>
+        <div class="option-list">
+          <label class="option"><input type="radio" name="q4"> محادثة نصية فقط</label>
+          <label class="option"><input type="radio" name="q4"> مكالمة صوتية</label>
+          <label class="option"><input type="radio" name="q4"> مكالمة فيديو</label>
+          <label class="option"><input type="radio" name="q4"> غير محدد، حسب راحتي وقت الجلسة</label>
         </div>
+      </div>
 
-        <button type="submit" id="submitAssessment" class="btn btn-primary btn-block" style="padding: 14px; font-size: 16px;">إرسال التقييم وعرض النتيجة</button>
-      </form>
-    </div>
+      <!-- Step 5 -->
+      <div class="assess-step question-card" style="display:none;">
+        <h3>هل تفضل التحدث باسم مستعار (وضع الاستخدام المجهول)؟</h3>
+        <div class="option-list">
+          <label class="option"><input type="radio" name="q5"> نعم، أفضّل عدم الكشف عن هويتي</label>
+          <label class="option"><input type="radio" name="q5"> لا، لا مانع من استخدام اسمي الحقيقي</label>
+        </div>
+      </div>
 
-    <!-- نتيجة التقييم تظهر هنا -->
-    <div id="resultCard" class="question-card" style="display: none; margin-top: 30px; text-align: center; background: #e0f2f1; border: 2px solid var(--teal-700);">
-      <h3 style="color: var(--teal-700); font-size: 22px; margin-bottom: 10px;">نتيجة التقييم المبدئي</h3>
-      <p id="scoreResult" style="font-size: 18px; font-weight: bold; margin-bottom: 15px;"></p>
-      <p id="recommendationText" style="margin-bottom: 20px;"></p>
-      <a href="{{ route('specialists.index') }}" class="btn btn-primary">تصفح المعالجين واحجز جلسة</a>
+      <div class="assess-nav">
+        <button type="button" class="btn btn-ghost btn-prev" data-i18n="btn.previous">السابق</button>
+        <button type="button" class="btn btn-primary btn-next" data-i18n="btn.next">التالي</button>
+      </div>
+    </form>
+
+    <!-- Smart-matching result, revealed by assessment.js after the last step -->
+    <div id="assess-result" style="display:none;">
+      <div class="question-card center">
+        <div style="width:64px;height:64px;border-radius:50%;background:var(--mint-100);color:var(--teal-700);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
+        </div>
+        <h3 data-i18n="assessment.resultTitle">وجدنا لك تطابقًا رائعًا!</h3>
+        <p style="margin-bottom:26px;" data-i18n="assessment.resultDesc">بناءً على إجاباتك، رشّح لك نظام المطابقة الذكي المعالجة التالية:</p>
+
+        <div class="specialist-card" style="text-align:right; margin-bottom:20px;">
+          <div class="specialist-top">
+            <div class="specialist-id">
+              <h4>د. روان الأسي</h4>
+              <span class="role">أخصائية علاج سلوكي معرفي — القلق والتوتر الدراسي</span>
+            </div>
+            <div class="avatar">م.ع</div>
+          </div>
+          <p>نسبة التوافق مع حالتك: <b style="color:var(--teal-700);">96٪</b></p>
+          <a href="specialist-profile.html" class="btn btn-primary btn-block btn-sm">عرض الملف الشخصي وحجز الجلسة</a>
+        </div>
+        <a href="specialists.html" class="link-arrow center" style="justify-content:center;" data-i18n="assessment.browseOthers">تصفّح معالجين آخرين</a>
+      </div>
     </div>
 
   </div>
 </section>
 
-<script>
-document.getElementById('assessmentForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    
-    const submitBtn = document.getElementById('submitAssessment');
-    const alertBox = document.getElementById('alertMessage');
-    const resultCard = document.getElementById('resultCard');
-    const token = localStorage.getItem('auth_token');
+<footer class="site-footer">
+  <div class="container footer-row">
+  
+    <div class="footer-links">
+      <a href="privacy.html" data-i18n="footer.privacy">سياسة الخصوصية</a>
+      <a href="terms.html" data-i18n="footer.terms">شروط الخدمة</a>
+      <a href="emergency.html" data-i18n="footer.support">تواصل مع الدعم</a>
+      <a href="#" data-i18n="footer.careers" title="قريبًا" onclick="event.preventDefault();">الوظائف</a>
+    </div>
+    <div class="footer-brand">
+      <b>Etma'en | إطمئن</b><br>
+      <span data-i18n="footer.rights">© 2024 إطمئن. ملاذك الآمن.</span>
+    </div>
+  </div>
+</footer>
 
-    // التأكد من تسجيل الدخول قبل الإرسال
-    if (!token) {
-        alertBox.style.display = 'block';
-        alertBox.style.background = '#ffebee';
-        alertBox.style.color = '#c62828';
-        alertBox.innerText = 'يجب عليك تسجيل الدخول أولاً لإرسال التقييم.';
-        return;
-    }
 
-    submitBtn.disabled = true;
-    submitBtn.innerText = 'جاري تحليل الإجابات...';
-    alertBox.style.display = 'none';
-    resultCard.style.display = 'none';
-
-    // جمع الإجابات
-    const formData = new FormData(this);
-    const answers = {
-        q1: formData.get('q1'),
-        q2: formData.get('q2'),
-        q3: formData.get('q3'),
-    };
-    
-    // حساب مجموع النقاط المبدئي في الواجهة
-    const totalScore = parseInt(answers.q1) + parseInt(answers.q2) + parseInt(answers.q3);
-    const notes = document.getElementById('notes').value;
-
-    const payload = {
-        answers: answers,
-        score: totalScore,
-        notes: notes
-    };
-
-    try {
-        const response = await fetch('/api/patient/assessment', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify(payload)
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-            this.style.display = 'none'; // إخفاء الفورم
-            resultCard.style.display = 'block';
-            
-            document.getElementById('scoreResult').innerText = `النتيجة: ${totalScore} / 9`;
-            
-            // تحديد التوصية بناءً على الدرجة
-            let rec = '';
-            if (totalScore <= 3) rec = 'حالتك مستقرة. نوصي بممارسة تقنيات الاسترخاء ومتابعة حالتك.';
-            else if (totalScore <= 6) rec = 'هناك بعض المؤشرات للتوتر أو القلق المعتدل. ننصحك بحجز جلسة استشارية قريبة.';
-            else rec = 'الأعراض تشير إلى ضغط نفسي مرتفع. من المهم جداً حجز جلسة مع معالج نفسي في أقرب وقت لتقديم الدعم اللازم.';
-            
-            document.getElementById('recommendationText').innerText = rec;
-        } else {
-            alertBox.style.display = 'block';
-            alertBox.style.background = '#ffebee';
-            alertBox.style.color = '#c62828';
-            alertBox.innerText = data.message || 'حدث خطأ أثناء حفظ التقييم.';
-        }
-    } catch (err) {
-        alertBox.style.display = 'block';
-        alertBox.style.background = '#ffebee';
-        alertBox.style.color = '#c62828';
-        alertBox.innerText = 'خطأ في الاتصال بالسيرفر.';
-    } finally {
-        submitBtn.disabled = false;
-        submitBtn.innerText = 'إرسال التقييم وعرض النتيجة';
-    }
-});
-</script>
-@endsection
+<script src="../assets/js/main.js"></script>
+<script src="../assets/js/assessment.js"></script>
+</body>
+</html>
